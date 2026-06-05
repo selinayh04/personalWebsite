@@ -40,7 +40,11 @@ function ExpandablePanel({ isOpen, children, className = '' }) {
   }, [isOpen]);
 
   return (
-    <div ref={ref} className={`expandable-panel ${className}`.trim()}>
+    <div
+      ref={ref}
+      className={`expandable-panel ${className}`.trim()}
+      style={{ height: 0, opacity: 0, overflow: 'hidden' }}
+    >
       {children}
     </div>
   );

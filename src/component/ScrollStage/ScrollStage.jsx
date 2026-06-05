@@ -8,6 +8,8 @@ const resolveSrc = (path) =>
 
 const SHIFT_DISTANCE = 120;
 const TRANSITION_DURATION = 350;
+const REFLOW_DURATION = 800;
+const REFLOW_EASE = 'outElastic(1, 0.65)';
 
 const STAGGER = 300;
 const SLIDE_DURATION = 1500;
@@ -212,6 +214,8 @@ function ScrollStage({ projects = [], activeCategory = 'ALL' }) {
     busyRef.current = true;
     let cancelled = false;
     const timers = [];
+    // Rebased so the anchor (current centre card) keeps its phase; others move relative to it.
+    let rebasedTarget = targetPhases.slice();
 
     leaving.forEach((i) => {
       const shift = shiftRefs.current[i];
@@ -229,7 +233,7 @@ function ScrollStage({ projects = [], activeCategory = 'ALL' }) {
 
     const startEnter = () => {
       if (cancelled) return;
-      phasesRef.current = targetPhases.slice();
+      phasesRef.current = rebasedTarget.slice();
       periodRef.current = targetPeriod;
       entering.forEach((i) => {
         visibleRef.current[i] = true;
@@ -262,18 +266,42 @@ function ScrollStage({ projects = [], activeCategory = 'ALL' }) {
       leaving.forEach((i) => {
         visibleRef.current[i] = false;
       });
+
+      // Anchor = currently most-centred (largest on-screen local) staying card.
+      if (staying.length > 0) {
+        const period = periodRef.current;
+        let anchor = staying[0];
+        let bestScore = -Infinity;
+        staying.forEach((i) => {
+          let local = (valueRef.current - phasesRef.current[i]) % period;
+          if (local < 0) local += period;
+          const score = local <= LIFECYCLE ? local : local - period;
+          if (score > bestScore) {
+            bestScore = score;
+            anchor = i;
+          }
+        });
+        const offset = phasesRef.current[anchor] - targetPhases[anchor];
+        rebasedTarget = targetPhases.map((p) => p + offset);
+      }
+
+      if (staying.length === 0) {
+        startEnter();
+        return;
+      }
+
       const fromPhases = phasesRef.current.slice();
       const fromPeriod = periodRef.current;
       const proxy = { t: 0 };
       reflowRef.current = animate(proxy, {
         t: 1,
-        duration: TRANSITION_DURATION,
-        ease: 'inOutCubic',
+        duration: REFLOW_DURATION,
+        ease: REFLOW_EASE,
         onUpdate: () => {
           const k = proxy.t;
           staying.forEach((i) => {
             phasesRef.current[i] =
-              fromPhases[i] + (targetPhases[i] - fromPhases[i]) * k;
+              fromPhases[i] + (rebasedTarget[i] - fromPhases[i]) * k;
           });
           periodRef.current = fromPeriod + (targetPeriod - fromPeriod) * k;
           seekRef.current(valueRef.current);

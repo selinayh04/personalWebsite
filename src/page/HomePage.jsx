@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { animate, splitText, stagger } from 'animejs';
 import ExpandablePanel from '../component/ExpandablePanel/ExpandablePanel.jsx';
 import ScrollStage from '../component/ScrollStage/ScrollStage.jsx';
 import Sort from '../component/Sort/Sort.jsx';
@@ -25,6 +26,29 @@ function HomePage() {
       .then((res) => res.json())
       .then((data) => setProjects(data.projects ?? []))
       .catch(() => setProjects([]));
+  }, []);
+
+  useEffect(() => {
+    const targets = [
+      document.querySelector('.home-page__name'),
+      ...document.querySelectorAll('.home-page__link'),
+    ].filter(Boolean);
+
+    const splits = targets.map((el) =>
+      splitText(el, { chars: { wrap: 'clip' } }),
+    );
+
+    animate(
+      splits.flatMap((s) => s.chars),
+      {
+        y: [{ to: ['100%', '0%'] }],
+        duration: 550,
+        ease: 'outCubic',
+        delay: stagger(60),
+      },
+    );
+
+    return () => splits.forEach((s) => s.revert());
   }, []);
 
   const categories = useMemo(() => {
