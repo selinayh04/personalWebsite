@@ -1,0 +1,30 @@
+.project-lightroom {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+.project-lightroom__content {
+  position: relative;
+  padding: 2rem;
+}
+
+.project-lightroom__close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.project-lightroom__title {
+  margin: 0;
+  font-weight: 400;
+}

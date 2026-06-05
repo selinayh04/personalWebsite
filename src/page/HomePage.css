@@ -1,2 +1,50 @@
 .home-page {
+  min-height: 100vh;
+  padding: 1.5rem 2rem;
+}
+
+.home-page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  z-index: 2;
+}
+
+.home-page__name {
+  margin: 0;
+  font-size: 4rem;
+  font-weight: 400;
+}
+
+.home-page__nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.home-page__group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.home-page__link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  font-size: 1.5rem;
+}
+
+.home-page__panel {
+  width: 280px;
+  text-align: right;
+}
+
+.home-page__panel p {
+  margin: 0.5rem 0 0.75rem;
+  font-size: 1rem;
 }

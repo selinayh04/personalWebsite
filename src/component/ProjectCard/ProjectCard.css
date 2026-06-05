@@ -1,0 +1,20 @@
+.project-card {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: 60vw;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  background-color: #797979;
+  border: 2px solid #fff;
+  color: #fff;
+  pointer-events: none;
+  will-change: transform, opacity;
+  transform: translateY(-300%) scale(0.2);
+}
