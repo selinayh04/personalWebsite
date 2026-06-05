@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { animate, createTimeline } from 'animejs';
 import ProjectCard from '../ProjectCard/ProjectCard.jsx';
+import ProjectLightroom from '../ProjectLightroom/ProjectLightroom.jsx';
+
+const resolveSrc = (path) =>
+  path ? `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}` : '';
 
 const STAGGER = 300;
 const SLIDE_DURATION = 1500;
@@ -17,6 +21,7 @@ const LIFECYCLE = SLIDE_DURATION + FADE_DURATION;
 
 function ScrollStage() {
   const [projects, setProjects] = useState([]);
+  const [activeProject, setActiveProject] = useState(null);
   const containerRefs = useRef([]);
 
   useEffect(() => {
@@ -112,13 +117,22 @@ function ScrollStage() {
     <div className="scroll-stage">
       {projects.map((project, i) => (
         <ProjectCard
-          key={i}
+          key={project.id ?? i}
           number={i + 1}
+          image={resolveSrc(project.filePath?.main)}
+          onClick={() => setActiveProject(project)}
           ref={(el) => {
             containerRefs.current[i] = el;
           }}
         />
       ))}
+
+      <ProjectLightroom
+        project={activeProject}
+        image={resolveSrc(activeProject?.filePath?.main)}
+        isOpen={!!activeProject}
+        onClose={() => setActiveProject(null)}
+      />
     </div>
   );
 }

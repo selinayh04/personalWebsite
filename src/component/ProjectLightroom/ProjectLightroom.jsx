@@ -1,23 +1,34 @@
 import './ProjectLightroom.css';
 
-function ProjectLightroom({ project, isOpen, onClose }) {
+const crossIcon = `${import.meta.env.BASE_URL}assets/icons/cross.svg`;
+
+function ProjectLightroom({ project, image, isOpen, onClose }) {
   if (!isOpen || !project) return null;
 
   return (
     <div className="project-lightroom" onClick={onClose}>
-      <div
-        className="project-lightroom__content"
-        onClick={(e) => e.stopPropagation()}
+      <button
+        type="button"
+        className="project-lightroom__close"
+        onClick={onClose}
       >
-        <button
-          type="button"
-          className="project-lightroom__close"
-          onClick={onClose}
+        <img src={crossIcon} alt="Close" />
+      </button>
+      {image ? (
+        <img
+          className="project-lightroom__img"
+          src={image}
+          alt={project.name}
+          onClick={(e) => e.stopPropagation()}
+        />
+      ) : (
+        <span
+          className="project-lightroom__title"
+          onClick={(e) => e.stopPropagation()}
         >
-          Close
-        </button>
-        <h2 className="project-lightroom__title">{project.name}</h2>
-      </div>
+          {project.name}
+        </span>
+      )}
     </div>
   );
 }

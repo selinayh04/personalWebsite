@@ -1,30 +1,37 @@
 .project-lightroom {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  z-index: 100000;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.9);
 }
 
-.project-lightroom__content {
-  position: relative;
-  padding: 2rem;
+.project-lightroom__img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
 }
 
 .project-lightroom__close {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
   background: none;
   border: none;
-  color: inherit;
-  font: inherit;
   cursor: pointer;
 }
 
+.project-lightroom__close img {
+  width: 100%;
+  height: 100%;
+  filter: invert(1);
+}
+
 .project-lightroom__title {
-  margin: 0;
-  font-weight: 400;
+  font-size: 2rem;
 }

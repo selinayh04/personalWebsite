@@ -1,6 +1,7 @@
 {
   "projects": [
     {
+      "id": "1",
       "name": "Synthetic Genesis",
       "date": "2026-05",
       "category": ["Interactive Sculpture"],
@@ -27,6 +28,7 @@
       ]
     },
     {
+      "id": "2",
       "name": "Project 02",
       "date": "",
       "category": [""],
@@ -39,6 +41,7 @@
       "imageCaptions": [""]
     },
     {
+      "id": "3",
       "name": "Project 03",
       "date": "",
       "category": [""],
@@ -51,6 +54,7 @@
       "imageCaptions": [""]
     },
     {
+      "id": "4",
       "name": "Project 04",
       "date": "",
       "category": [""],
@@ -63,6 +67,7 @@
       "imageCaptions": [""]
     },
     {
+      "id": "5",
       "name": "Project 05",
       "date": "",
       "category": [""],
@@ -75,6 +80,7 @@
       "imageCaptions": [""]
     },
     {
+      "id": "6",
       "name": "Project 06",
       "date": "",
       "category": [""],
@@ -87,6 +93,7 @@
       "imageCaptions": [""]
     },
     {
+      "id": "7",
       "name": "Project 07",
       "date": "",
       "category": [""],
@@ -99,6 +106,7 @@
       "imageCaptions": [""]
     },
     {
+      "id": "8",
       "name": "Project 08",
       "date": "",
       "category": [""],
@@ -111,6 +119,7 @@
       "imageCaptions": [""]
     },
     {
+      "id": "9",
       "name": "Project 09",
       "date": "",
       "category": [""],
@@ -123,6 +132,7 @@
       "imageCaptions": [""]
     },
     {
+      "id": "10",
       "name": "Project 10",
       "date": "",
       "category": [""],
@@ -135,6 +145,7 @@
       "imageCaptions": [""]
     },
     {
+      "id": "11",
       "name": "Project 11",
       "date": "",
       "category": [""],
