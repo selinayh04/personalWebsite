@@ -143,19 +143,6 @@
       "linkLabels": [""],
       "filePath": { "main": "", "additional": [] },
       "imageCaptions": [""]
-    },
-    {
-      "id": "11",
-      "name": "Project 11",
-      "date": "",
-      "category": [""],
-      "medium": "",
-      "dimension": "",
-      "description": "",
-      "link": [""],
-      "linkLabels": [""],
-      "filePath": { "main": "", "additional": [] },
-      "imageCaptions": [""]
     }
   ]
 }
