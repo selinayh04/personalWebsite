@@ -2,22 +2,27 @@
   position: fixed;
   inset: 0;
   z-index: 100000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(0, 0, 0, 0.9);
+}
+
+.project-lightroom__backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
 }
 
 .project-lightroom__img {
-  max-width: 90vw;
-  max-height: 90vh;
-  object-fit: contain;
+  position: fixed;
+  object-fit: cover;
 }
 
 .project-lightroom__close {
-  position: absolute;
+  position: fixed;
   top: 1.5rem;
   right: 1.5rem;
+  z-index: 1;
   width: 2rem;
   height: 2rem;
   padding: 0;

@@ -1,0 +1,22 @@
+.sort {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.sort__item {
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  font-size: 1.5rem;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.35s ease;
+}
+
+.sort__item.is-active,
+.sort__item:hover {
+  opacity: 1;
+}

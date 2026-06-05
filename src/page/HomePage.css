@@ -17,6 +17,12 @@
   font-weight: 400;
 }
 
+.home-page__left {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
 .home-page__nav {
   display: flex;
   flex-direction: column;
@@ -47,4 +53,20 @@
 .home-page__panel p {
   margin: 0.5rem 0 0.75rem;
   font-size: 1rem;
+}
+
+.home-page__links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-top: 0.5rem;
+}
+
+.home-page__contact-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
 }

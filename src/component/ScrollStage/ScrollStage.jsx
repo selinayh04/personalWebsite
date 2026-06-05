@@ -19,23 +19,37 @@ const SMOOTH_EASE = 'outExpo';
 
 const LIFECYCLE = SLIDE_DURATION + FADE_DURATION;
 
-function ScrollStage() {
-  const [projects, setProjects] = useState([]);
+function ScrollStage({ projects = [] }) {
   const [activeProject, setActiveProject] = useState(null);
+  const [originRect, setOriginRect] = useState(null);
   const containerRefs = useRef([]);
+  const activeRef = useRef(false);
+  const clickedElRef = useRef(null);
 
   useEffect(() => {
-    fetch(`${import.meta.env.BASE_URL}assets/works/project.json`)
-      .then((res) => res.json())
-      .then((data) => setProjects(data.projects ?? []))
-      .catch(() => setProjects([]));
-  }, []);
+    activeRef.current = !!activeProject;
+  }, [activeProject]);
+
+  const openProject = (project, el) => {
+    clickedElRef.current = el;
+    el.style.visibility = 'hidden';
+    setOriginRect(el.getBoundingClientRect());
+    setActiveProject(project);
+  };
+
+  const closeProject = () => {
+    if (clickedElRef.current) {
+      clickedElRef.current.style.visibility = '';
+      clickedElRef.current = null;
+    }
+    setActiveProject(null);
+  };
 
   useEffect(() => {
     const elements = containerRefs.current.filter(Boolean);
     if (elements.length === 0) return undefined;
 
-    const period = elements.length * STAGGER;
+    const period = Math.max(elements.length * STAGGER, LIFECYCLE);
 
     const timelines = elements.map((el) => {
       const tl = createTimeline({ autoplay: false });
@@ -85,6 +99,7 @@ function ScrollStage() {
 
     const handleWheel = (e) => {
       e.preventDefault();
+      if (activeRef.current) return;
       let delta = e.deltaY;
       if (e.deltaMode === 1) delta *= 16;
       else if (e.deltaMode === 2) delta *= window.innerHeight;
@@ -120,7 +135,7 @@ function ScrollStage() {
           key={project.id ?? i}
           number={i + 1}
           image={resolveSrc(project.filePath?.main)}
-          onClick={() => setActiveProject(project)}
+          onClick={(e) => openProject(project, e.currentTarget)}
           ref={(el) => {
             containerRefs.current[i] = el;
           }}
@@ -130,8 +145,9 @@ function ScrollStage() {
       <ProjectLightroom
         project={activeProject}
         image={resolveSrc(activeProject?.filePath?.main)}
+        originRect={originRect}
         isOpen={!!activeProject}
-        onClose={() => setActiveProject(null)}
+        onClose={closeProject}
       />
     </div>
   );
