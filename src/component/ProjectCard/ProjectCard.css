@@ -13,6 +13,11 @@
   transform: translateY(-300%) scale(0.2);
 }
 
+.project-card__shift {
+  width: 100%;
+  height: 100%;
+}
+
 .project-card__inner {
   width: 100%;
   height: 100%;

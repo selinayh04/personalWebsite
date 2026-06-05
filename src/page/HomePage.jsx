@@ -37,11 +37,6 @@ function HomePage() {
     return [...set];
   }, [projects]);
 
-  const filteredProjects = useMemo(() => {
-    if (activeCategory === 'ALL') return projects;
-    return projects.filter((p) => (p.category ?? []).includes(activeCategory));
-  }, [projects, activeCategory]);
-
   const setOpen = (panel, value) => {
     setOpenPanels((prev) => ({ ...prev, [panel]: value }));
   };
@@ -133,7 +128,7 @@ function HomePage() {
         </nav>
       </header>
 
-      <ScrollStage projects={filteredProjects} />
+      <ScrollStage projects={projects} activeCategory={activeCategory} />
       <Toast message={toast} />
     </section>
   );
