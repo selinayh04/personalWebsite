@@ -4,16 +4,14 @@ import './ExpandablePanel.css';
 
 function ExpandablePanel({ isOpen, children, className = '' }) {
   const ref = useRef(null);
-  const hasMountedRef = useRef(false);
+  const prevOpenRef = useRef(isOpen);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
-    if (!hasMountedRef.current) {
-      hasMountedRef.current = true;
-      return;
-    }
+    if (prevOpenRef.current === isOpen) return;
+    prevOpenRef.current = isOpen;
 
     if (isOpen) {
       el.style.height = 'auto';

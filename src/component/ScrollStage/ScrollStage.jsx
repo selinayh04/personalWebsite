@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { animate, createTimeline } from 'animejs';
 import ProjectCard from '../ProjectCard/ProjectCard.jsx';
 import ProjectLightroom from '../ProjectLightroom/ProjectLightroom.jsx';
@@ -20,7 +20,14 @@ const SCALE_END = 1.0;
 
 const WHEEL_MULTIPLIER = 0.6;
 const SMOOTH_DURATION = 700;
-const SMOOTH_EASE = 'outExpo';
+const SMOOTH_EASE = 'outCubic';
+
+const ENTRANCE_DELAY = 1500;
+const ENTRANCE_DURATION = 1800;
+const ENTRANCE_FADE_DURATION = 1200;
+// Land so card 1 (phase 0) settles at its featured position (full scale, just before fade).
+const ENTRANCE_DISTANCE = SLIDE_DURATION;
+const ENTRANCE_EASE = 'outExpo';
 
 const LIFECYCLE = SLIDE_DURATION + FADE_DURATION;
 
@@ -43,6 +50,7 @@ function ScrollStage({ projects = [], activeCategory = 'ALL' }) {
   const [activeProject, setActiveProject] = useState(null);
   const [originRect, setOriginRect] = useState(null);
 
+  const stageRef = useRef(null);
   const containerRefs = useRef([]);
   const shiftRefs = useRef([]);
   const timelinesRef = useRef([]);
@@ -50,19 +58,26 @@ function ScrollStage({ projects = [], activeCategory = 'ALL' }) {
   const periodRef = useRef(LIFECYCLE);
   const visibleRef = useRef([]);
   const valueRef = useRef(0);
+  const targetRef = useRef(0);
   const seekRef = useRef(() => {});
   const busyRef = useRef(false);
   const activeRef = useRef(false);
+  const enteredRef = useRef(false);
   const clickedElRef = useRef(null);
   const prevMatchRef = useRef(null);
   const prevProjectsRef = useRef(null);
   const reflowRef = useRef(null);
+
+  useLayoutEffect(() => {
+    if (stageRef.current) stageRef.current.style.opacity = '0';
+  }, []);
 
   useEffect(() => {
     activeRef.current = !!activeProject;
   }, [activeProject]);
 
   const openProject = (project, el) => {
+    if (parseFloat(getComputedStyle(el).opacity) < 0.5) return;
     clickedElRef.current = el;
     el.style.visibility = 'hidden';
     setOriginRect(el.getBoundingClientRect());
@@ -130,8 +145,7 @@ function ScrollStage({ projects = [], activeCategory = 'ALL' }) {
     seekRef.current = seek;
     seek(valueRef.current);
 
-    const stateObj = { value: valueRef.current };
-    let target = valueRef.current;
+    targetRef.current = valueRef.current;
     let scrollAnim = null;
 
     const handleWheel = (e) => {
@@ -140,15 +154,16 @@ function ScrollStage({ projects = [], activeCategory = 'ALL' }) {
       let delta = e.deltaY;
       if (e.deltaMode === 1) delta *= 16;
       else if (e.deltaMode === 2) delta *= window.innerHeight;
-      target += delta * WHEEL_MULTIPLIER;
+      targetRef.current += delta * WHEEL_MULTIPLIER;
 
+      const obj = { value: valueRef.current };
       scrollAnim?.pause();
-      scrollAnim = animate(stateObj, {
-        value: target,
+      scrollAnim = animate(obj, {
+        value: targetRef.current,
         duration: SMOOTH_DURATION,
         ease: SMOOTH_EASE,
         onUpdate: () => {
-          valueRef.current = stateObj.value;
+          valueRef.current = obj.value;
           seek(valueRef.current);
         },
       });
@@ -156,9 +171,42 @@ function ScrollStage({ projects = [], activeCategory = 'ALL' }) {
 
     window.addEventListener('wheel', handleWheel, { passive: false });
 
+    let entranceTimer = null;
+    let entranceAnim = null;
+    if (!enteredRef.current && projects.length > 0) {
+      enteredRef.current = true;
+      targetRef.current = ENTRANCE_DISTANCE;
+      const stage = stageRef.current;
+      const obj = { value: 0 };
+      entranceTimer = setTimeout(() => {
+        entranceTimer = null;
+        if (stage) {
+          animate(stage, {
+            opacity: [0, 1],
+            duration: ENTRANCE_FADE_DURATION,
+            ease: 'outCubic',
+          });
+        }
+        entranceAnim = animate(obj, {
+          value: ENTRANCE_DISTANCE,
+          duration: ENTRANCE_DURATION,
+          ease: ENTRANCE_EASE,
+          onUpdate: () => {
+            valueRef.current = obj.value;
+            seek(valueRef.current);
+          },
+        });
+      }, ENTRANCE_DELAY);
+    }
+
     return () => {
       window.removeEventListener('wheel', handleWheel);
       scrollAnim?.pause();
+      if (entranceTimer) {
+        clearTimeout(entranceTimer);
+        enteredRef.current = false;
+      }
+      entranceAnim?.pause();
       timelines.forEach((tl) => {
         tl?.cancel?.();
         tl?.revert?.();
@@ -328,7 +376,7 @@ function ScrollStage({ projects = [], activeCategory = 'ALL' }) {
   }, [projects, activeCategory]);
 
   return (
-    <div className="scroll-stage">
+    <div className="scroll-stage" ref={stageRef}>
       {projects.map((project, i) => (
         <ProjectCard
           key={project.id ?? i}
