@@ -16,6 +16,7 @@ function HomePage() {
     contact: false,
   });
   const [toast, setToast] = useState('');
+  const [revealed, setRevealed] = useState(false);
   const toastTimer = useRef(null);
 
   const [projects, setProjects] = useState([]);
@@ -45,6 +46,7 @@ function HomePage() {
         duration: 550,
         ease: 'outCubic',
         delay: stagger(60),
+        onComplete: () => setRevealed(true),
       },
     );
 
@@ -96,6 +98,7 @@ function HomePage() {
             <button type="button" className="home-page__link">
               About
             </button>
+            {revealed && (
             <ExpandablePanel
               isOpen={openPanels.about}
               className="home-page__panel"
@@ -108,6 +111,7 @@ function HomePage() {
               </p>
               <p>She is open for commission and freelance:)</p>
             </ExpandablePanel>
+            )}
           </div>
 
           <div
@@ -118,6 +122,7 @@ function HomePage() {
             <button type="button" className="home-page__link">
               Contact
             </button>
+            {revealed && (
             <ExpandablePanel
               isOpen={openPanels.contact}
               className="home-page__panel"
@@ -148,6 +153,7 @@ function HomePage() {
                 </a>
               </div>
             </ExpandablePanel>
+            )}
           </div>
         </nav>
       </header>
