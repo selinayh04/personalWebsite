@@ -57,10 +57,24 @@
       "medium": "Adobe Creative Suite",
       "dimension": "",
       "description": "A project to explore the toxic loop of desire, wanting, and addiction through design so that audiences can see themselves caught in cycles of endless consumption, because this loop quietly shapes our daily behaviors without us realizing.",
-      "link": [""],
-      "linkLabels": [""],
-      "filePath": { "main": "", "additional": [] },
-      "imageCaptions": [""]
+      "link": ["https://bfacd.parsons.edu/2026/yuehan-ma"],
+      "linkLabels": ["Project page"],
+      "filePath": { "main": "assets/works/THE LOOP/image/main.gif",
+      "additional": [
+        "assets/works/THE LOOP/image/1.jpg",
+        "assets/works/THE LOOP/image/2.jpg",
+        "assets/works/THE LOOP/image/3.jpg",
+        "assets/works/THE LOOP/image/4.jpg",
+        "assets/works/THE LOOP/image/5.jpg"
+      ] },
+      "imageCaptions": [
+        "Book Overview",
+        "highlighted Pages", 
+        "Lenticular Cards",
+        "Foldable Poster",
+        "Lottery Tickets",
+        "Packaging Design"
+      ]
     },
     {
       "id": "4",
