@@ -86,21 +86,43 @@
       "description": "256 Images is a visual research project composed of 256 collected and created images, functioning as a mapping of thought through imagemaking. Conceived as a multi-volume book, the project unfolds across five interconnected sections—Human Animal Nature, Nostalgia, Mental Reframing, Digital, and The Loop—each representing a distinct lens on perception, emotion, and contemporary existence.",
       "link": [""],
       "linkLabels": [""],
-      "filePath": { "main": "", "additional": [] },
-      "imageCaptions": [""]
+      "filePath": { "main": "assets/works/256/image/main.jpg", "additional": [
+        "assets/works/256/image/1.jpg",
+        "assets/works/256/image/2.jpg",
+        "assets/works/256/image/3.png"
+      ] },
+      "imageCaptions": [
+        "Documentation",
+        "Documentation", 
+        "Documentation",
+        "Documentation"
+       
+      ]
     },
     {
       "id": "5",
-      "name": "Project 05",
-      "date": "",
-      "category": [""],
-      "medium": "",
+      "name": "Just In Case",
+      "date": "2025-05",
+      "category": ["Book"],
+      "medium": "Adobe Creative Suite",
       "dimension": "",
-      "description": "",
+      "description": "Just In Case explores the multifaceted phenomenon of hoarding—not only the extreme cases often sensationalized on television or the internet but also the everyday behaviors many of us experience. From saving old files to overstocking on groceries, hoarding manifests in various forms, reflecting deeper aspects of our lives.",
       "link": [""],
       "linkLabels": [""],
-      "filePath": { "main": "", "additional": [] },
-      "imageCaptions": [""]
+      "filePath": { "main": "assets/works/Just In Case/image/main.jpg", "additional": [
+        "assets/works/Just In Case/image/1.jpg",
+        "assets/works/Just In Case/image/2.jpg",
+        "assets/works/Just In Case/image/3.jpg",
+        "assets/works/Just In Case/image/4.jpg",
+        "assets/works/Just In Case/image/5.jpg"
+      ] },
+      "imageCaptions": [
+        "Documentation",
+        "Documentation",
+        "Documentation",
+        "Documentation",
+        "Documentation"
+        ]
     },
     {
       "id": "6",
