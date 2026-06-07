@@ -20,13 +20,20 @@ function HomePage() {
   const toastTimer = useRef(null);
 
   const [projects, setProjects] = useState([]);
+  const [categoryOrder, setCategoryOrder] = useState([]);
   const [activeCategory, setActiveCategory] = useState('ALL');
 
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}assets/works/project.json`)
       .then((res) => res.json())
-      .then((data) => setProjects(data.projects ?? []))
-      .catch(() => setProjects([]));
+      .then((data) => {
+        setProjects(data.projects ?? []);
+        setCategoryOrder(data.categoryOrder ?? []);
+      })
+      .catch(() => {
+        setProjects([]);
+        setCategoryOrder([]);
+      });
   }, []);
 
   useEffect(() => {
@@ -60,8 +67,10 @@ function HomePage() {
         if (c) set.add(c);
       }),
     );
-    return [...set];
-  }, [projects]);
+    const ordered = categoryOrder.filter((c) => set.has(c));
+    const extras = [...set].filter((c) => !categoryOrder.includes(c));
+    return [...ordered, ...extras];
+  }, [projects, categoryOrder]);
 
   const setOpen = (panel, value) => {
     setOpenPanels((prev) => ({ ...prev, [panel]: value }));
