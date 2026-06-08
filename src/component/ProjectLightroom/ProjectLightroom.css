@@ -13,23 +13,20 @@
   opacity: 0;
 }
 
-.project-lightroom__track {
-  position: fixed;
-  inset: 0;
-  will-change: transform;
-}
-
 .project-lightroom__img {
   position: fixed;
+  z-index: 1;
   object-fit: cover;
 }
 
-.project-lightroom__rest {
-  position: absolute;
+.project-lightroom__loop {
+  position: fixed;
+  left: 0;
   display: flex;
   flex-wrap: nowrap;
   gap: 32px;
   opacity: 0;
+  will-change: transform;
 }
 
 .project-lightroom__photo {

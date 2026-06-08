@@ -42,18 +42,32 @@ const setBox = (el, box) => {
   el.style.height = `${box.height}px`;
 };
 
+const loadRatio = (src) =>
+  new Promise((resolve) => {
+    const im = new Image();
+    im.onload = () => resolve(im.naturalWidth / im.naturalHeight || 16 / 9);
+    im.onerror = () => resolve(16 / 9);
+    im.src = src;
+  });
+
 function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
   const [render, setRender] = useState(false);
+  const [loop, setLoop] = useState(null);
+
   const dataRef = useRef({});
   const imgRef = useRef(null);
   const backdropRef = useRef(null);
-  const trackRef = useRef(null);
-  const restRef = useRef(null);
+  const stripRef = useRef(null);
   const infoRef = useRef(null);
 
-  const scrollXRef = useRef(0);
+  const targetBoxRef = useRef(null);
+  const morphDoneRef = useRef(false);
+  const ratiosRef = useRef(null);
+  const loopParamsRef = useRef(null);
+  const valueXRef = useRef(0);
   const targetXRef = useRef(0);
   const readyRef = useRef(false);
+  const cancelledRef = useRef(false);
 
   useEffect(() => {
     if (isOpen && project) {
@@ -62,20 +76,62 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
     }
   }, [isOpen, project, image, originRect]);
 
+  const buildLoop = () => {
+    if (cancelledRef.current) return;
+    if (!morphDoneRef.current || !ratiosRef.current || !targetBoxRef.current) return;
+
+    const target = targetBoxRef.current;
+    const H = target.height;
+    const images = ratiosRef.current.map((r) => ({
+      src: r.src,
+      width: H * r.ratio,
+    }));
+    const setWidth = images.reduce((sum, im) => sum + im.width, 0);
+    const period = setWidth + images.length * GAP;
+    const copies = Math.ceil(window.innerWidth / period) + 3;
+    const middle = Math.floor(copies / 2);
+    const translateX0 = target.left - middle * period;
+
+    loopParamsRef.current = { period, translateX0 };
+    valueXRef.current = 0;
+    targetXRef.current = 0;
+    setLoop({ images, H, top: target.top, copies });
+  };
+
+  // Once the carousel is in the DOM: place it, fade it in, then hand off from
+  // the morphing hero image so the swap is seamless.
+  useLayoutEffect(() => {
+    if (!loop) return;
+    const strip = stripRef.current;
+    const params = loopParamsRef.current;
+    if (!strip || !params) return;
+
+    strip.style.transform = `translateX(${params.translateX0}px)`;
+    strip.style.opacity = '0';
+    animate(strip, {
+      opacity: [0, 1],
+      duration: 300,
+      ease: 'outCubic',
+      onComplete: () => {
+        if (imgRef.current) imgRef.current.style.display = 'none';
+        readyRef.current = true;
+      },
+    });
+  }, [loop]);
+
   useLayoutEffect(() => {
     if (!render) return;
     const img = imgRef.current;
     const backdrop = backdropRef.current;
-    const track = trackRef.current;
-    const rest = restRef.current;
     const info = infoRef.current;
     const { originRect: origin, image: src } = dataRef.current;
 
-    scrollXRef.current = 0;
-    targetXRef.current = 0;
+    cancelledRef.current = false;
+    morphDoneRef.current = false;
+    ratiosRef.current = null;
     readyRef.current = false;
-    if (track) track.style.transform = 'translateX(0px)';
-    if (rest) rest.style.opacity = '0';
+    valueXRef.current = 0;
+    targetXRef.current = 0;
     if (info) info.style.opacity = '0';
 
     if (backdrop) {
@@ -88,16 +144,13 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
 
     if (!img || !src || !origin) return;
 
-    const positionRest = (target) => {
-      if (!rest) return;
-      rest.style.top = `${target.top}px`;
-      rest.style.height = `${target.height}px`;
-      rest.style.left = `${target.left + target.width + GAP}px`;
-    };
+    const additional = dataRef.current.project.filePath?.additional ?? [];
+    const srcs = [src, ...additional.map(resolveSrc)];
 
     setBox(img, origin);
     const pre = new Image();
     pre.onload = () => {
+      if (cancelledRef.current) return;
       const ratio = pre.naturalWidth / pre.naturalHeight || 16 / 9;
       const base = centeredBox(ratio);
 
@@ -112,8 +165,8 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
       const totalH = base.height + INFO_GAP + infoH;
       const top = Math.max(MIN_TOP, (window.innerHeight - totalH) / 2);
       const target = { left: base.left, top, width: base.width, height: base.height };
+      targetBoxRef.current = target;
 
-      positionRest(target);
       if (info) info.style.top = `${top + base.height + INFO_GAP}px`;
       animate(img, {
         left: [`${origin.left}px`, `${target.left}px`],
@@ -123,22 +176,36 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
         duration: MORPH_DURATION,
         ease: 'outCubic',
         onComplete: () => {
-          readyRef.current = true;
-          if (rest) {
-            animate(rest, { opacity: [0, 1], duration: 300, ease: 'outCubic' });
-          }
           if (info) {
             animate(info, { opacity: [0, 1], duration: 300, ease: 'outCubic' });
           }
+          morphDoneRef.current = true;
+          buildLoop();
         },
       });
     };
     pre.src = src;
+
+    // Preload every image to get its aspect ratio for the carousel layout.
+    Promise.all(srcs.map(loadRatio)).then((ratios) => {
+      if (cancelledRef.current) return;
+      ratiosRef.current = ratios.map((r, i) => ({ src: srcs[i], ratio: r }));
+      buildLoop();
+    });
   }, [render]);
 
   useEffect(() => {
     if (!render) return undefined;
     let scrollAnim = null;
+
+    const apply = () => {
+      const params = loopParamsRef.current;
+      const strip = stripRef.current;
+      if (!params || !strip) return;
+      let x = valueXRef.current % params.period;
+      if (x < 0) x += params.period;
+      strip.style.transform = `translateX(${params.translateX0 - x}px)`;
+    };
 
     const handleWheel = (e) => {
       if (!readyRef.current) return;
@@ -146,29 +213,17 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
       let delta = e.deltaY;
       if (e.deltaMode === 1) delta *= 16;
       else if (e.deltaMode === 2) delta *= window.innerWidth;
-      targetXRef.current -= delta * WHEEL_MULTIPLIER;
-
-      let minX = 0;
-      const rest = restRef.current;
-      if (rest) {
-        const rightAtZero = rest.getBoundingClientRect().right - scrollXRef.current;
-        const edge = window.innerWidth * 0.05;
-        minX = Math.min(0, -(rightAtZero - window.innerWidth + edge));
-      }
-      if (targetXRef.current > 0) targetXRef.current = 0;
-      if (targetXRef.current < minX) targetXRef.current = minX;
+      targetXRef.current += delta * WHEEL_MULTIPLIER;
 
       scrollAnim?.pause();
-      const obj = { x: scrollXRef.current };
+      const obj = { x: valueXRef.current };
       scrollAnim = animate(obj, {
         x: targetXRef.current,
         duration: SCROLL_DURATION,
         ease: SCROLL_EASE,
         onUpdate: () => {
-          scrollXRef.current = obj.x;
-          if (trackRef.current) {
-            trackRef.current.style.transform = `translateX(${obj.x}px)`;
-          }
+          valueXRef.current = obj.x;
+          apply();
         },
       });
     };
@@ -183,18 +238,15 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
   const handleClose = () => {
     const img = imgRef.current;
     const backdrop = backdropRef.current;
-    const track = trackRef.current;
-    const rest = restRef.current;
+    const strip = stripRef.current;
     const info = infoRef.current;
     const { originRect: origin } = dataRef.current;
 
+    cancelledRef.current = true;
     readyRef.current = false;
-    scrollXRef.current = 0;
-    targetXRef.current = 0;
-    if (track) track.style.transform = 'translateX(0px)';
-    if (rest) animate(rest, { opacity: 0, duration: MORPH_DURATION, ease: 'outCubic' });
-    if (info) animate(info, { opacity: 0, duration: MORPH_DURATION, ease: 'outCubic' });
 
+    if (strip) animate(strip, { opacity: 0, duration: MORPH_DURATION, ease: 'outCubic' });
+    if (info) animate(info, { opacity: 0, duration: MORPH_DURATION, ease: 'outCubic' });
     if (backdrop) {
       animate(backdrop, {
         opacity: [1, 0],
@@ -203,7 +255,15 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
       });
     }
 
-    if (img && origin) {
+    const finish = () => {
+      setRender(false);
+      setLoop(null);
+      onClose();
+    };
+
+    if (img && origin && targetBoxRef.current) {
+      img.style.display = '';
+      setBox(img, targetBoxRef.current);
       animate(img, {
         left: `${origin.left}px`,
         top: `${origin.top}px`,
@@ -211,21 +271,16 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
         height: `${origin.height}px`,
         duration: MORPH_DURATION,
         ease: 'outCubic',
-        onComplete: () => {
-          setRender(false);
-          onClose();
-        },
+        onComplete: finish,
       });
     } else {
-      setRender(false);
-      onClose();
+      finish();
     }
   };
 
   if (!render) return null;
 
   const { project: p, image: src } = dataRef.current;
-  const additional = p.filePath?.additional ?? [];
 
   return (
     <div className="project-lightroom" onClick={handleClose}>
@@ -237,35 +292,43 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
       >
         <img src={crossIcon} alt="Close" />
       </button>
-      <div className="project-lightroom__track" ref={trackRef}>
-        {src ? (
-          <img
-            ref={imgRef}
-            className="project-lightroom__img"
-            src={src}
-            alt={p.name}
-            onClick={(e) => e.stopPropagation()}
-          />
-        ) : (
-          <span
-            className="project-lightroom__title"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {p.name}
-          </span>
-        )}
-        <div className="project-lightroom__rest" ref={restRef}>
-          {additional.map((path, idx) => (
-            <img
-              key={path ?? idx}
-              className="project-lightroom__photo"
-              src={resolveSrc(path)}
-              alt={`${p.name} ${idx + 2}`}
-              onClick={(e) => e.stopPropagation()}
-            />
-          ))}
+
+      {src ? (
+        <img
+          ref={imgRef}
+          className="project-lightroom__img"
+          src={src}
+          alt={p.name}
+          onClick={(e) => e.stopPropagation()}
+        />
+      ) : (
+        <span
+          className="project-lightroom__title"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {p.name}
+        </span>
+      )}
+
+      {loop && (
+        <div
+          className="project-lightroom__loop"
+          ref={stripRef}
+          style={{ top: `${loop.top}px`, height: `${loop.H}px` }}
+        >
+          {Array.from({ length: loop.copies }).flatMap((_, c) =>
+            loop.images.map((im, k) => (
+              <img
+                key={`${c}-${k}`}
+                className="project-lightroom__photo"
+                src={im.src}
+                alt={p.name}
+                onClick={(e) => e.stopPropagation()}
+              />
+            )),
+          )}
         </div>
-      </div>
+      )}
 
       <div
         className="project-lightroom__info"
