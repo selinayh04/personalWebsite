@@ -13,9 +13,66 @@
   opacity: 0;
 }
 
+.project-lightroom__track {
+  position: fixed;
+  inset: 0;
+  will-change: transform;
+}
+
 .project-lightroom__img {
   position: fixed;
   object-fit: cover;
+}
+
+.project-lightroom__rest {
+  position: absolute;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 32px;
+  opacity: 0;
+}
+
+.project-lightroom__photo {
+  flex: 0 0 auto;
+  height: 100%;
+  width: auto;
+}
+
+.project-lightroom__info {
+  position: fixed;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  font-size: 0.9rem;
+}
+
+.project-lightroom__info-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.project-lightroom__info-name {
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+}
+
+.project-lightroom__info-meta {
+  opacity: 0.6;
+}
+
+.project-lightroom__info-desc {
+  margin: 0.75rem 0 0;
+  line-height: 1.5;
+  opacity: 0.8;
+}
+
+.project-lightroom__info-right {
+  text-align: right;
+  white-space: nowrap;
+  font-size: 1.1rem;
 }
 
 .project-lightroom__close {
