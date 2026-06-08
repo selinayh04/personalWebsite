@@ -18,6 +18,10 @@ const FADE_DURATION = 200;
 const SCALE_START = 0.2;
 const SCALE_END = 1.0;
 
+// A card stops catching clicks once it fades below this opacity, so the click
+// falls through to the card behind it.
+const CLICK_THRESHOLD = 0.5;
+
 const WHEEL_MULTIPLIER = 0.6;
 const SMOOTH_DURATION = 700;
 const SMOOTH_EASE = 'outCubic';
@@ -77,7 +81,6 @@ function ScrollStage({ projects = [], activeCategory = 'ALL' }) {
   }, [activeProject]);
 
   const openProject = (project, el) => {
-    if (parseFloat(getComputedStyle(el).opacity) < 0.5) return;
     clickedElRef.current = el;
     el.style.visibility = 'hidden';
     setOriginRect(el.getBoundingClientRect());
@@ -128,17 +131,27 @@ function ScrollStage({ projects = [], activeCategory = 'ALL' }) {
         const outer = elements[i];
         if (!visibleRef.current[i]) {
           tl.seek(0);
-          if (outer) outer.style.zIndex = '0';
+          if (outer) {
+            outer.style.zIndex = '0';
+            outer.style.pointerEvents = 'none';
+          }
           return;
         }
         let local = (value - phasesRef.current[i]) % period;
         if (local < 0) local += period;
         if (local <= LIFECYCLE) {
           tl.seek(local);
-          if (outer) outer.style.zIndex = String(Math.round(local));
+          if (outer) {
+            outer.style.zIndex = String(Math.round(local));
+            const op = parseFloat(outer.style.opacity || '1');
+            outer.style.pointerEvents = op >= CLICK_THRESHOLD ? 'auto' : 'none';
+          }
         } else {
           tl.seek(0);
-          if (outer) outer.style.zIndex = '0';
+          if (outer) {
+            outer.style.zIndex = '0';
+            outer.style.pointerEvents = 'none';
+          }
         }
       });
     };
