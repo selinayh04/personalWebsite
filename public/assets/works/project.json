@@ -4,7 +4,7 @@
     {
       "id": "1",
       "name": "Synthetic Genesis",
-      "date": "2026-05",
+      "date": "2026",
       "category": ["Poster"],
       "medium": "Mixed media",
       "dimension": "39.8 x 79.5 x 33.7 in",
@@ -31,7 +31,7 @@
     {
       "id": "2",
       "name": "Roosevevlt Island Annual Pool Mural",
-      "date": "2024-06",
+      "date": "2024",
       "category": ["Freelance"],
       "medium": "Paint, sand, spraypaint",
       "dimension": "Over 8,000 square feet",
@@ -53,7 +53,7 @@
     {
       "id": "3",
       "name": "THE LOOP",
-      "date": "2026-05",
+      "date": "2026",
       "category": ["Book"],
       "medium": "Adobe Creative Suite",
       "dimension": "",
@@ -80,7 +80,7 @@
     {
       "id": "4",
       "name": "256 IMAGES",
-      "date": "2025-12",
+      "date": "2025",
       "category": ["Book"],
       "medium": "Adobe Creative Suite",
       "dimension": "",
@@ -103,7 +103,7 @@
     {
       "id": "5",
       "name": "Just In Case",
-      "date": "2025-05",
+      "date": "2025",
       "category": ["Book"],
       "medium": "Adobe Creative Suite",
       "dimension": "",
@@ -127,25 +127,36 @@
     },
     {
       "id": "6",
-      "name": "Project 06",
-      "date": "",
-      "category": ["Poster"],
-      "medium": "",
+      "name": "Fire Hydrant",
+      "date": "2025",
+      "category": ["Book"],
+      "medium": "Adobe Creative Suite",
       "dimension": "",
-      "description": "",
+      "description": "This publication delves into the fire hydrants of Manhattan, New York City, exploring 50 unique hydrants that bear distinct marks—stickers, spray paint, and even traces of dog pee. Each hydrant transforms into a piece of public art, serving as a functional object while acting as a canvas for spontaneous, everyday creativity. Through these marks, the hydrants become symbols of community interaction, embodying the idea that everyone can shape art in public spaces.",
       "link": [""],
       "linkLabels": [""],
-      "filePath": { "main": "assets/works/SyntheticGenesis/image/1.jpg", "additional": [] },
-      "imageCaptions": [""]
+      "filePath": { "main": "assets/works/Fire Hydrant/image/main.gif", "additional": [
+        "assets/works/Fire Hydrant/image/1.jpg",
+        "assets/works/Fire Hydrant/image/2.jpg",
+        "assets/works/Fire Hydrant/image/3.mp4",
+        "assets/works/Fire Hydrant/image/4.jpg"        
+      ] },
+      "imageCaptions": [
+      "HOW TO",
+      "Documentation",
+      "Documentation",
+      "Documentation",
+      "Documentation"
+      ]
     },
     {
       "id": "7",
-      "name": "Project 07",
-      "date": "",
-      "category": [""],
-      "medium": "",
+      "name": "1920 TYPESPECIMEN",
+      "date": "2024",
+      "category": ["Book"],
+      "medium": "Adobe Creative Suite",
       "dimension": "",
-      "description": "",
+      "description": "\u201c1920\u201d typeface is a take on the Art Deco style capturing its elements with a fresh perspective. This typeface features shapes, balanced designs and clean lines along with graceful curves and sharp edges reminiscent of the 1920s era.",
       "link": [""],
       "linkLabels": [""],
       "filePath": { "main": "", "additional": [] },
