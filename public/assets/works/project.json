@@ -159,7 +159,12 @@
       "description": "\u201c1920\u201d typeface is a take on the Art Deco style capturing its elements with a fresh perspective. This typeface features shapes, balanced designs and clean lines along with graceful curves and sharp edges reminiscent of the 1920s era.",
       "link": [""],
       "linkLabels": [""],
-      "filePath": { "main": "", "additional": [] },
+      "filePath": { "main": "assets/works/1920/image/main.jpg", "additional": [
+        "assets/works/1920/image/1.jpg",
+        "assets/works/1920/image/2.jpg",
+        "assets/works/1920/image/3.jpg",
+        "assets/works/1920/image/4.jpg"
+      ] },
       "imageCaptions": [""]
     },
     {
