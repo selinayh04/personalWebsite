@@ -78,11 +78,11 @@
       "name": "Just In Case",
       "date": "2025",
       "category": ["Book"],
-      "medium": "Adobe Creative Suite",
+      "medium": "Adobe Creative Suite, Figma",
       "dimension": "",
       "description": "Just In Case explores the multifaceted phenomenon of hoarding—not only the extreme cases often sensationalized on television or the internet but also the everyday behaviors many of us experience. From saving old files to overstocking on groceries, hoarding manifests in various forms, reflecting deeper aspects of our lives.",
-      "link": [""],
-      "linkLabels": [""],
+      "link": ["https://www.figma.com/proto/V1LCXzf59Yl8pboB4VVhJh/Just-In-Case?node-id=1-3&t=wdK0izj7p3yGMyg8-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=7%3A5"],
+      "linkLabels": ["Website Portotype"],
       "filePath": { "main": "assets/works/Just In Case/image/main.jpg", "additional": [
         "assets/works/Just In Case/image/1.jpg",
         "assets/works/Just In Case/image/2.jpg",
@@ -138,24 +138,138 @@
         "assets/works/1920/image/3.jpg",
         "assets/works/1920/image/4.jpg"
       ] },
-      "imageCaptions": [""]
+      "imageCaptions": [
+        "Documentation",
+        "Documentation",  
+        "Documentation",
+        "Documentation",
+        "Documentation"
+      ]
     },
     {
       "id": "7",
-      "name": "Project 08",
-      "date": "",
-      "category": [""],
-      "medium": "",
+      "name": "Summer Time",
+      "date": "2025",
+      "category": ["Poster"],
+      "medium": "Adobe Creative Suite",
       "dimension": "",
-      "description": "",
+      "description": "Pop-up Event Poster",
       "link": [""],
       "linkLabels": [""],
-      "filePath": { "main": "", "additional": [] },
-      "imageCaptions": [""]
+      "filePath": { "main": "assets/works/Posters/image/Summer.jpg", "additional": [
+
+      ] },
+      "imageCaptions": [
+        "Documentation"
+      ]
     },
     {
       "id": "8",
-      "name": "Project 09",
+      "name": "Feel EVERYTHING Around You",
+      "date": "2025",
+      "category": ["Poster"],
+      "medium": "Adobe Creative Suite",
+      "dimension": "",
+      "description": "Lyrics Poster",
+      "link": [""],
+      "linkLabels": [""],
+      "filePath": { "main": "assets/works/Posters/image/song.jpg", "additional": [] },
+      "imageCaptions": ["Documentation"]
+    },
+    {
+      "id": "9",
+      "name": "OFFLINE",
+      "date": "2025",
+      "category": ["Poster"],
+      "medium": "Adobe Creative Suite",
+      "dimension": "",
+      "description": "Magazine Cover",
+      "link": [""],
+      "linkLabels": [""],
+      "filePath": { "main": "assets/works/Posters/image/OFFLINE.jpg", "additional": [] },
+      "imageCaptions": ["Documentation"]
+    },
+    {
+      "id": "10",
+      "name": "The Endless Party",
+      "date": "2025",
+      "category": ["Poster"],
+      "medium": "Adobe Creative Suite",
+      "dimension": "",
+      "description": "Open Call Poster",
+      "link": [""],
+      "linkLabels": [""],
+      "filePath": { "main": "assets/works/Posters/image/party.jpg", "additional": [] },
+      "imageCaptions": ["Documentation"]
+    },
+    {
+      "id": "11",
+      "name": "Smoke Break",
+      "date": "2026",
+      "category": ["Poster"],
+      "medium": "Adobe Creative Suite",
+      "dimension": "",
+      "description": "Open Call Poster",
+      "link": [""],
+      "linkLabels": [""],
+      "filePath": { "main": "assets/works/Posters/image/smoke.png", "additional": [] },
+      "imageCaptions": ["Documentation"]
+    },
+    {
+      "id": "12",
+      "name": "Pixel Eden",
+      "date": "2024",
+      "category": ["Print"],
+      "medium": "Silkscreen, Adobe Creative Suite",
+      "dimension": "20x20 in",
+      "description": "The work uses the apple from Eden as a symbol of desire. Even in today’s digital world, where everything feels new and high-tech, human desire still exists — it just transforms and finds new forms of expression.",
+      "link": [""],
+      "linkLabels": [""],
+      "filePath": { "main": "assets/works/Prints/image/apple.jpg", "additional": [] },
+      "imageCaptions": ["Documentation"]
+    },
+    {
+      "id": "13",
+      "name": "The Loop_01",
+      "date": "2025",
+      "category": ["Print"],
+      "medium": "Silkscreen, Adobe Creative Suite",
+      "dimension": "10x15 in",
+      "description": "The clock collapses into a loop where day and night dissolve into one continuous craving. Nicotine becomes a measure of time itself—each passing second stretching toward the next cigarette, as desire resets and begins again without end.",
+      "link": [""],
+      "linkLabels": [""],
+      "filePath": { "main": "assets/works/Prints/image/01.jpg", "additional": [] },
+      "imageCaptions": ["Documentation"]
+    },
+    {
+      "id": "14",
+      "name": "The Loop_05",
+      "date": "2025",
+      "category": ["Print"],
+      "medium": "Silkscreen, Adobe Creative Suite",
+      "dimension": "10x15 in",
+      "description": "Windows multiply without closure, each image a partial promise that dissolves as the next one appears. The print reflects on addiction as a condition of endless deferral—where satisfaction is always present on the screen, yet never fully attained.",
+      "link": [""],
+      "linkLabels": [""],
+      "filePath": { "main": "assets/works/Prints/image/05.jpg", "additional": [] },
+      "imageCaptions": ["Documentation"]
+    },
+    {
+      "id": "15",
+      "name": "The Loop_03",
+      "date": "2026",
+      "category": ["Print"],
+      "medium": "Silkscreen, Adobe Creative Suite",
+      "dimension": "10x15 in",
+      "description": "",
+      "link": [""],
+      "linkLabels": [""],
+      "filePath": { "main": "assets/works/Prints/image/03.jpg", "additional": [] },
+      "imageCaptions": ["Documentation"]
+    },
+    {
+      "id": "16",
+      "name": "",
       "date": "",
       "category": [""],
       "medium": "",
@@ -167,8 +281,21 @@
       "imageCaptions": [""]
     },
     {
-      "id": "9",
-      "name": "Project 10",
+      "id": "17",
+      "name": "",
+      "date": "",
+      "category": [""],
+      "medium": "",
+      "dimension": "",
+      "description": "",
+      "link": [""],
+      "linkLabels": [""],
+      "filePath": { "main": "", "additional": [] },
+      "imageCaptions": [""]
+    },
+    {
+      "id": "18",
+      "name": "",
       "date": "",
       "category": [""],
       "medium": "",
