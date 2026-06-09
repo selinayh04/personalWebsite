@@ -3,33 +3,6 @@
   "projects": [
     {
       "id": "1",
-      "name": "Synthetic Genesis",
-      "date": "2026",
-      "category": ["Poster"],
-      "medium": "Mixed media",
-      "dimension": "39.8 x 79.5 x 33.7 in",
-      "description": "Synthetic Genesis is a conceptual art installation reflecting on the emergence of intimacy, trust, and emotional connection between humans and machines. Drawing inspiration from the biblical act of creation and humanity's long fascination with creating life, the piece examines how an AI system on the other end of the line can feel meaningfully present even when its artificial nature is fully understood. The central object is a futuristic payphone constructed from intersecting metal planes, housing a clear handset. Visitors browse a printed phone directory containing over 100,000 fictional personas, each with a unique name, location, background, personality, and voice, and dial a number to initiate a conversation. When the call connects, an unseen system listens and responds, generating replies shaped by the chosen persona's identity and personality. By recasting the familiar ritual of making a phone call as an act of creation, where each dialed number brings a synthetic life into being, the work invites audiences to question the boundaries that once separated companionship from computation. As emotion becomes something we share with machines, what happens to the way we listen, confide, and care for one another? The installation does not offer an answer. Instead, it opens a quiet space in which to consider a future where relationships are no longer something we form only with each other, but something we increasingly build, knowingly, willingly, and intimately, with the synthetic life we ourselves have brought into being.",
-      "link": ["https://parsons.edu/dt-2026/synthetic-genesis/"],
-      "linkLabels": ["Parsons Website"],
-      "filePath": {
-        "main": "assets/works/SyntheticGenesis/image/1.jpg",
-        "additional": [
-          "assets/works/SyntheticGenesis/image/2.jpg",
-          "assets/works/SyntheticGenesis/image/3.jpg",
-          "assets/works/SyntheticGenesis/image/4.jpg",
-          "assets/works/SyntheticGenesis/image/5.jpg"
-        ]
-      },
-      "imageCaptions": [
-        "Installation View",
-        "Installation View",
-        "Installation View",
-        "Interaction",
-        "Interaction"
-      ]
-    },
-    {
-      "id": "2",
       "name": "Roosevevlt Island Annual Pool Mural",
       "date": "2024",
       "category": ["Freelance"],
@@ -51,7 +24,7 @@
       ]
     },
     {
-      "id": "3",
+      "id": "2",
       "name": "THE LOOP",
       "date": "2026",
       "category": ["Book"],
@@ -78,7 +51,7 @@
       ]
     },
     {
-      "id": "4",
+      "id": "3",
       "name": "256 IMAGES",
       "date": "2025",
       "category": ["Book"],
@@ -101,7 +74,7 @@
       ]
     },
     {
-      "id": "5",
+      "id": "4",
       "name": "Just In Case",
       "date": "2025",
       "category": ["Book"],
@@ -126,7 +99,7 @@
         ]
     },
     {
-      "id": "6",
+      "id": "5",
       "name": "Fire Hydrant",
       "date": "2025",
       "category": ["Book"],
@@ -150,7 +123,7 @@
       ]
     },
     {
-      "id": "7",
+      "id": "6",
       "name": "1920 TYPESPECIMEN",
       "date": "2024",
       "category": ["Book"],
@@ -168,7 +141,7 @@
       "imageCaptions": [""]
     },
     {
-      "id": "8",
+      "id": "7",
       "name": "Project 08",
       "date": "",
       "category": [""],
@@ -181,7 +154,7 @@
       "imageCaptions": [""]
     },
     {
-      "id": "9",
+      "id": "8",
       "name": "Project 09",
       "date": "",
       "category": [""],
@@ -194,7 +167,7 @@
       "imageCaptions": [""]
     },
     {
-      "id": "10",
+      "id": "9",
       "name": "Project 10",
       "date": "",
       "category": [""],
