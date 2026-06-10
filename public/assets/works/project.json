@@ -266,45 +266,6 @@
       "linkLabels": [""],
       "filePath": { "main": "assets/works/Prints/image/03.jpg", "additional": [] },
       "imageCaptions": ["Documentation"]
-    },
-    {
-      "id": "16",
-      "name": "",
-      "date": "",
-      "category": [""],
-      "medium": "",
-      "dimension": "",
-      "description": "",
-      "link": [""],
-      "linkLabels": [""],
-      "filePath": { "main": "", "additional": [] },
-      "imageCaptions": [""]
-    },
-    {
-      "id": "17",
-      "name": "",
-      "date": "",
-      "category": [""],
-      "medium": "",
-      "dimension": "",
-      "description": "",
-      "link": [""],
-      "linkLabels": [""],
-      "filePath": { "main": "", "additional": [] },
-      "imageCaptions": [""]
-    },
-    {
-      "id": "18",
-      "name": "",
-      "date": "",
-      "category": [""],
-      "medium": "",
-      "dimension": "",
-      "description": "",
-      "link": [""],
-      "linkLabels": [""],
-      "filePath": { "main": "", "additional": [] },
-      "imageCaptions": [""]
     }
   ]
 }
