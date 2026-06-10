@@ -45,19 +45,43 @@ function HomePage() {
     const splits = targets.map((el) =>
       splitText(el, { chars: { wrap: 'clip' } }),
     );
+    const chars = splits.flatMap((s) => s.chars);
+    // Idle animation only runs on the name (first target).
+    const nameChars = splits[0] ? splits[0].chars : [];
 
-    animate(
-      splits.flatMap((s) => s.chars),
-      {
-        y: [{ to: ['100%', '0%'] }],
-        duration: 550,
-        ease: 'outCubic',
-        delay: stagger(60),
-        onComplete: () => setRevealed(true),
+    let firstTimer = null;
+    let idleTimer = null;
+
+    // Idle standby: a random letter slides out and the same one slides back in.
+    const playRandom = () => {
+      const char = nameChars[Math.floor(Math.random() * nameChars.length)];
+      if (char) {
+        animate(char, {
+          y: [
+            { to: '-100%', duration: 750, ease: 'in(3)' },
+            { to: ['100%', '0%'], duration: 750, ease: 'out(3)' },
+          ],
+        });
+      }
+      idleTimer = setTimeout(playRandom, 2000 + Math.random() * 1000);
+    };
+
+    animate(chars, {
+      y: [{ to: ['100%', '0%'] }],
+      duration: 550,
+      ease: 'outCubic',
+      delay: stagger(60),
+      onComplete: () => {
+        setRevealed(true);
+        firstTimer = setTimeout(playRandom, 4000);
       },
-    );
+    });
 
-    return () => splits.forEach((s) => s.revert());
+    return () => {
+      clearTimeout(firstTimer);
+      clearTimeout(idleTimer);
+      splits.forEach((s) => s.revert());
+    };
   }, []);
 
   const categories = useMemo(() => {
