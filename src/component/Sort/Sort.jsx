@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef } from 'react';
 import { animate, splitText, stagger } from 'animejs';
 import './Sort.css';
 
-function Sort({ categories, active, onSelect }) {
+function Sort({ categories, active, onSelect, onCharsReady }) {
   const options = ['ALL', ...categories];
   const categoryKey = categories.join('|');
   const rootRef = useRef(null);
@@ -30,6 +30,9 @@ function Sort({ categories, active, onSelect }) {
           duration: 550,
           ease: 'outCubic',
           delay: stagger(60),
+          onComplete: () => {
+            onCharsReady?.(splits.flatMap((s) => s.chars));
+          },
         },
       );
     }, 2500);

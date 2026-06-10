@@ -19,6 +19,7 @@ function HomePage() {
   const [revealed, setRevealed] = useState(false);
   const toastTimer = useRef(null);
   const nameCharsRef = useRef([]);
+  const sortCharsRef = useRef([]);
 
   const [projects, setProjects] = useState([]);
   const [categoryOrder, setCategoryOrder] = useState([]);
@@ -46,7 +47,7 @@ function HomePage() {
     const splits = targets.map((el) =>
       splitText(el, { chars: { wrap: 'clip' } }),
     );
-    nameCharsRef.current = splits[0]?.chars ?? [];
+    nameCharsRef.current = splits.flatMap((s) => s.chars);
 
     animate(
       splits.flatMap((s) => s.chars),
@@ -62,7 +63,7 @@ function HomePage() {
     return () => splits.forEach((s) => s.revert());
   }, []);
 
-  // Idle "screensaver": after 5s of no activity, the name letters detach and
+  // Idle "screensaver": after 20s of no activity, all header words detach and
   // bounce around the screen like a DVD logo until the user interacts again.
   useEffect(() => {
     const idle = { active: false, timer: null, states: [] };
@@ -100,8 +101,8 @@ function HomePage() {
     };
 
     const enterIdle = () => {
-      const chars = nameCharsRef.current;
-      if (idle.active || !chars || chars.length === 0) return;
+      const chars = [...nameCharsRef.current, ...sortCharsRef.current];
+      if (idle.active || chars.length === 0) return;
       idle.active = true;
       idle.states = chars.map((el) => {
         const r = el.getBoundingClientRect();
@@ -115,7 +116,7 @@ function HomePage() {
           h: r.height,
           vx: Math.random() < 0.5 ? -1 : 1,
           vy: Math.random() < 0.5 ? -1 : 1,
-          speed: 0.15 + Math.random() * 0.12,
+          speed: 0.07 + Math.random() * 0.06,
           anim: null,
         };
       });
@@ -156,12 +157,12 @@ function HomePage() {
     const reset = () => {
       if (idle.active) exitIdle();
       clearTimeout(idle.timer);
-      idle.timer = setTimeout(enterIdle, 5000);
+      idle.timer = setTimeout(enterIdle, 20000);
     };
 
     const events = ['mousemove', 'wheel', 'scroll', 'keydown', 'pointerdown', 'touchstart'];
     events.forEach((ev) => window.addEventListener(ev, reset, { passive: true }));
-    idle.timer = setTimeout(enterIdle, 5000);
+    idle.timer = setTimeout(enterIdle, 20000);
 
     return () => {
       events.forEach((ev) => window.removeEventListener(ev, reset));
@@ -206,6 +207,7 @@ function HomePage() {
             categories={categories}
             active={activeCategory}
             onSelect={setActiveCategory}
+            onCharsReady={(chars) => { sortCharsRef.current = chars; }}
           />
         </div>
         <nav className="home-page__nav">
