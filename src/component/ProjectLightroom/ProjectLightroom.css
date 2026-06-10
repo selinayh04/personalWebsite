@@ -64,6 +64,8 @@
   margin: 0.75rem 0 0;
   line-height: 1.5;
   opacity: 0.8;
+  max-height: 22vh;
+  overflow-y: auto;
 }
 
 .project-lightroom__info-right {

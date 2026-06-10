@@ -79,6 +79,8 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
   const buildLoop = () => {
     if (cancelledRef.current) return;
     if (!morphDoneRef.current || !ratiosRef.current || !targetBoxRef.current) return;
+    // Only one image: keep the single hero, no carousel / infinite scroll.
+    if (ratiosRef.current.length <= 1) return;
 
     const target = targetBoxRef.current;
     const H = target.height;
@@ -92,10 +94,48 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
     const middle = Math.floor(copies / 2);
     const translateX0 = target.left - middle * period;
 
-    loopParamsRef.current = { period, translateX0 };
+    loopParamsRef.current = { period, translateX0, middle };
     valueXRef.current = 0;
     targetXRef.current = 0;
     setLoop({ images, H, top: target.top, copies });
+  };
+
+  // Recompute sizes / positions so the lightroom tracks window resizes.
+  const relayout = () => {
+    const img = imgRef.current;
+    const info = infoRef.current;
+    const ratios = ratiosRef.current;
+    if (!ratios || ratios.length === 0) return;
+
+    const base = centeredBox(ratios[0].ratio);
+    let infoH = 0;
+    if (info) {
+      info.style.left = `${base.left}px`;
+      info.style.width = `${base.width}px`;
+      infoH = info.offsetHeight;
+    }
+    const totalH = base.height + INFO_GAP + infoH;
+    const top = Math.max(MIN_TOP, (window.innerHeight - totalH) / 2);
+    const target = { left: base.left, top, width: base.width, height: base.height };
+    targetBoxRef.current = target;
+    if (info) info.style.top = `${top + base.height + INFO_GAP}px`;
+
+    const params = loopParamsRef.current;
+    const strip = stripRef.current;
+    if (params && strip) {
+      const H = target.height;
+      const setWidth = ratios.reduce((sum, r) => sum + H * r.ratio, 0);
+      const period = setWidth + ratios.length * GAP;
+      const translateX0 = target.left - params.middle * period;
+      loopParamsRef.current = { period, translateX0, middle: params.middle };
+      strip.style.top = `${top}px`;
+      strip.style.height = `${H}px`;
+      let x = valueXRef.current % period;
+      if (x < 0) x += period;
+      strip.style.transform = `translateX(${translateX0 - x}px)`;
+    } else if (img && img.style.display !== 'none') {
+      setBox(img, target);
+    }
   };
 
   // Once the carousel is in the DOM: place it, fade it in, then hand off from
@@ -208,6 +248,8 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
     };
 
     const handleWheel = (e) => {
+      // Let the description scroll natively inside its own box.
+      if (infoRef.current && infoRef.current.contains(e.target)) return;
       if (!readyRef.current) return;
       e.preventDefault();
       let delta = e.deltaY;
@@ -228,9 +270,13 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
       });
     };
 
+    const handleResize = () => relayout();
+
     window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('resize', handleResize);
       scrollAnim?.pause();
     };
   }, [render]);

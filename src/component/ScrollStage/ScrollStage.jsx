@@ -114,6 +114,12 @@ function ScrollStage({ projects = [], activeCategory = 'ALL' }) {
         },
         0,
       );
+      // Keep sliding (same velocity) while fading, instead of freezing in place.
+      tl.add(
+        el,
+        { translateY: ['-30%', '-14%'], duration: FADE_DURATION, ease: 'linear' },
+        SLIDE_DURATION,
+      );
       tl.add(
         el,
         { opacity: [1, 0], duration: FADE_DURATION, ease: 'outCubic' },
@@ -162,8 +168,9 @@ function ScrollStage({ projects = [], activeCategory = 'ALL' }) {
     let scrollAnim = null;
 
     const handleWheel = (e) => {
+      if (activeRef.current) return;
       e.preventDefault();
-      if (activeRef.current || busyRef.current) return;
+      if (busyRef.current) return;
       let delta = e.deltaY;
       if (e.deltaMode === 1) delta *= 16;
       else if (e.deltaMode === 2) delta *= window.innerHeight;
