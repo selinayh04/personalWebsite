@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { animate, createTimeline } from 'animejs';
 import ProjectCard from '../ProjectCard/ProjectCard.jsx';
 import ProjectLightroom from '../ProjectLightroom/ProjectLightroom.jsx';
@@ -191,6 +191,22 @@ function ScrollStage({ projects = [], activeCategory = 'ALL' }) {
 
     window.addEventListener('wheel', handleWheel, { passive: false });
 
+    const handleMouseMove = (e) => {
+      elements.forEach((el, i) => {
+        if (!el) return;
+        if (!visibleRef.current[i]) { el.classList.remove('is-hovered'); return; }
+        const r = el.getBoundingClientRect();
+        el.classList.toggle(
+          'is-hovered',
+          e.clientX >= r.left && e.clientX <= r.right &&
+          e.clientY >= r.top  && e.clientY <= r.bottom,
+        );
+      });
+    };
+    const handleMouseLeave = () => elements.forEach((el) => el?.classList.remove('is-hovered'));
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseleave', handleMouseLeave);
+
     let entranceTimer = null;
     let entranceAnim = null;
     if (!enteredRef.current && projects.length > 0) {
@@ -221,6 +237,8 @@ function ScrollStage({ projects = [], activeCategory = 'ALL' }) {
 
     return () => {
       window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseleave', handleMouseLeave);
       scrollAnim?.pause();
       if (entranceTimer) {
         clearTimeout(entranceTimer);
@@ -395,14 +413,26 @@ function ScrollStage({ projects = [], activeCategory = 'ALL' }) {
     };
   }, [projects, activeCategory]);
 
+  // Stage-level click: open whichever visible card is currently hovered,
+  // picking the frontmost (highest z-index) among all hovered cards so that
+  // clicking in a non-overlapping area of a background card still works.
+  const handleStageClick = useCallback(() => {
+    if (activeRef.current) return;
+    const candidates = containerRefs.current
+      .map((el, i) => ({ el, i, z: parseInt(el?.style.zIndex || '0', 10) }))
+      .filter(({ el }) => el?.classList.contains('is-hovered'));
+    if (candidates.length === 0) return;
+    const { el, i } = candidates.reduce((a, b) => (b.z > a.z ? b : a));
+    openProject(projects[i], el);
+  }, [projects]);
+
   return (
-    <div className="scroll-stage" ref={stageRef}>
+    <div className="scroll-stage" ref={stageRef} onClick={handleStageClick}>
       {projects.map((project, i) => (
         <ProjectCard
           key={project.id ?? i}
           number={i + 1}
           image={resolveSrc(project.filePath?.main)}
-          onClick={(e) => openProject(project, e.currentTarget)}
           ref={(el) => {
             containerRefs.current[i] = el;
           }}

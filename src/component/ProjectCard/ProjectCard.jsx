@@ -1,8 +1,8 @@
 import './ProjectCard.css';
 
-function ProjectCard({ number, image, onClick, ref, shiftRef }) {
+function ProjectCard({ number, image, ref, shiftRef }) {
   return (
-    <div ref={ref} className="project-card" onClick={onClick}>
+    <div ref={ref} className="project-card">
       <div ref={shiftRef} className="project-card__shift">
         <div className="project-card__inner">
           {image ? (

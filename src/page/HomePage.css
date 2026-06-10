@@ -23,6 +23,20 @@
   gap: 1.5rem;
 }
 
+.home-page__tagline {
+  margin: -2.5rem 0 0;
+  font-size: 0.85rem;
+  opacity: 0.6;
+  display: inline-block;
+  transform: rotate(1.5deg);
+  transform-origin: left center;
+  white-space: nowrap;
+}
+
+.home-page__tagline-char {
+  display: inline-block;
+}
+
 .home-page__nav {
   display: flex;
   flex-direction: column;

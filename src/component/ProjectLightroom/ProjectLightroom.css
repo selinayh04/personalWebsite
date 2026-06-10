@@ -60,12 +60,45 @@
   opacity: 0.6;
 }
 
+.project-lightroom__desc-wrap {
+  position: relative;
+  margin-top: 0.75rem;
+}
+
+.project-lightroom__desc-wrap::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 8px;
+  height: 2.5rem;
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.85));
+  pointer-events: none;
+}
+
 .project-lightroom__info-desc {
-  margin: 0.75rem 0 0;
-  line-height: 1.5;
+  margin: 0;
+  line-height: 1.6;
   opacity: 0.8;
-  max-height: 22vh;
-  overflow-y: auto;
+  padding-bottom: 0.5rem;
+}
+
+.project-lightroom__info {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+
+.project-lightroom__info::-webkit-scrollbar {
+  width: 4px;
+}
+
+.project-lightroom__info::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.project-lightroom__info::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 2px;
 }
 
 .project-lightroom__info-right {

@@ -20,6 +20,7 @@ function HomePage() {
   const toastTimer = useRef(null);
   const nameCharsRef = useRef([]);
   const sortCharsRef = useRef([]);
+  const taglineWordsRef = useRef([]);
 
   const [projects, setProjects] = useState([]);
   const [categoryOrder, setCategoryOrder] = useState([]);
@@ -101,10 +102,14 @@ function HomePage() {
     };
 
     const enterIdle = () => {
-      const chars = [...nameCharsRef.current, ...sortCharsRef.current];
-      if (idle.active || chars.length === 0) return;
+      const allEls = [
+        ...nameCharsRef.current,
+        ...sortCharsRef.current,
+        ...taglineWordsRef.current.filter(Boolean),
+      ];
+      if (idle.active || allEls.length === 0) return;
       idle.active = true;
-      idle.states = chars.map((el) => {
+      idle.states = allEls.map((el) => {
         const r = el.getBoundingClientRect();
         return {
           el,
@@ -129,6 +134,7 @@ function HomePage() {
         s.el.style.transform = `translate(${s.x}px, ${s.y}px)`;
         segment(s);
       });
+
     };
 
     const exitIdle = () => {
@@ -203,6 +209,17 @@ function HomePage() {
       <header className="home-page__header">
         <div className="home-page__left">
           <h1 className="home-page__name">Yuehan Ma</h1>
+          <p className="home-page__tagline">
+            {'She is open for commission and freelance :)'.split('').map((char, i) => (
+              <span
+                key={i}
+                ref={(el) => { taglineWordsRef.current[i] = el; }}
+                className="home-page__tagline-char"
+              >
+                {char === ' ' ? '\u00a0' : char}
+              </span>
+            ))}
+          </p>
           <Sort
             categories={categories}
             active={activeCategory}
@@ -230,7 +247,6 @@ function HomePage() {
                 craft interactive and visual experiences that foster human
                 connection.
               </p>
-              <p>She is open for commission and freelance:)</p>
             </ExpandablePanel>
             )}
           </div>

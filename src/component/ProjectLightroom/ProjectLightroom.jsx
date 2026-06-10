@@ -108,17 +108,26 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
     if (!ratios || ratios.length === 0) return;
 
     const base = centeredBox(ratios[0].ratio);
-    let infoH = 0;
     if (info) {
       info.style.left = `${base.left}px`;
       info.style.width = `${base.width}px`;
-      infoH = info.offsetHeight;
+      info.style.maxHeight = '';
+      info.style.overflowY = '';
     }
+    const infoH = info ? info.offsetHeight : 0;
     const totalH = base.height + INFO_GAP + infoH;
     const top = Math.max(MIN_TOP, (window.innerHeight - totalH) / 2);
     const target = { left: base.left, top, width: base.width, height: base.height };
     targetBoxRef.current = target;
-    if (info) info.style.top = `${top + base.height + INFO_GAP}px`;
+    if (info) {
+      const infoTop = top + base.height + INFO_GAP;
+      const availH = window.innerHeight - infoTop - MIN_TOP;
+      info.style.top = `${infoTop}px`;
+      if (infoH > availH) {
+        info.style.maxHeight = `${Math.max(80, availH)}px`;
+        info.style.overflowY = 'auto';
+      }
+    }
 
     const params = loopParamsRef.current;
     const strip = stripRef.current;
@@ -393,7 +402,9 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
           </div>
         </div>
         {p.description && (
-          <p className="project-lightroom__info-desc">{p.description}</p>
+          <div className="project-lightroom__desc-wrap">
+            <p className="project-lightroom__info-desc">{p.description}</p>
+          </div>
         )}
       </div>
     </div>

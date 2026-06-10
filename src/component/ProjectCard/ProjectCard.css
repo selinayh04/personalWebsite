@@ -31,7 +31,8 @@
   transition: transform 0.3s ease;
 }
 
-.project-card:hover .project-card__inner {
+.project-card:hover .project-card__inner,
+.project-card.is-hovered .project-card__inner {
   transform: scale(1.05);
 }
 
