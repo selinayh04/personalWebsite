@@ -247,6 +247,13 @@ function HomePage() {
                 craft interactive and visual experiences that foster human
                 connection.
               </p>
+              <a
+                className="home-page__cv"
+                href={`${import.meta.env.BASE_URL}assets/cv.pdf`}
+                download
+              >
+                Download CV
+              </a>
             </ExpandablePanel>
             )}
           </div>
