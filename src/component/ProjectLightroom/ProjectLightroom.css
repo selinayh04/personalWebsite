@@ -81,22 +81,21 @@
   line-height: 1.6;
   opacity: 0.8;
   padding-bottom: 0.5rem;
-}
-
-.project-lightroom__info {
+  height: 6rem;
+  overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
 }
 
-.project-lightroom__info::-webkit-scrollbar {
+.project-lightroom__info-desc::-webkit-scrollbar {
   width: 4px;
 }
 
-.project-lightroom__info::-webkit-scrollbar-track {
+.project-lightroom__info-desc::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.project-lightroom__info::-webkit-scrollbar-thumb {
+.project-lightroom__info-desc::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.25);
   border-radius: 2px;
 }
