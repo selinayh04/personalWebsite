@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { animate, splitText, stagger } from 'animejs';
 import ExpandablePanel from '../component/ExpandablePanel/ExpandablePanel.jsx';
 import ScrollStage from '../component/ScrollStage/ScrollStage.jsx';
+import ProjectGrid from '../component/ProjectGrid/ProjectGrid.jsx';
 import Sort from '../component/Sort/Sort.jsx';
 import Toast from '../component/Toast/Toast.jsx';
 import './HomePage.css';
@@ -25,6 +26,9 @@ function HomePage() {
   const [projects, setProjects] = useState([]);
   const [categoryOrder, setCategoryOrder] = useState([]);
   const [activeCategory, setActiveCategory] = useState('ALL');
+  const [view, setView] = useState('scroll');
+  const stageRef = useRef(null);
+  const switchingRef = useRef(false);
 
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}assets/works/project.json`)
@@ -204,6 +208,29 @@ function HomePage() {
     toastTimer.current = setTimeout(() => setToast(''), 2000);
   };
 
+  // Fade the current stage out, swap scroll <-> grid, let the new view play
+  // its own entrance (the scroll stage replays its intro on remount).
+  const toggleView = () => {
+    if (switchingRef.current) return;
+    const wrapper = stageRef.current;
+    const swap = () => setView((v) => (v === 'scroll' ? 'grid' : 'scroll'));
+    if (!wrapper) {
+      swap();
+      return;
+    }
+    switchingRef.current = true;
+    animate(wrapper, {
+      opacity: [1, 0],
+      duration: 350,
+      ease: 'outCubic',
+      onComplete: () => {
+        swap();
+        wrapper.style.opacity = '1';
+        switchingRef.current = false;
+      },
+    });
+  };
+
   return (
     <section className="home-page">
       <header className="home-page__header">
@@ -220,6 +247,13 @@ function HomePage() {
               </span>
             ))}
           </p>
+          <button
+            type="button"
+            className="home-page__grid-toggle"
+            onClick={toggleView}
+          >
+            {view === 'grid' ? 'Show as scroll' : 'Show as grid'}
+          </button>
           <Sort
             categories={categories}
             active={activeCategory}
@@ -302,7 +336,13 @@ function HomePage() {
         </nav>
       </header>
 
-      <ScrollStage projects={projects} activeCategory={activeCategory} />
+      <div className="home-page__stage" ref={stageRef}>
+        {view === 'grid' ? (
+          <ProjectGrid projects={projects} activeCategory={activeCategory} />
+        ) : (
+          <ScrollStage projects={projects} activeCategory={activeCategory} />
+        )}
+      </div>
       <Toast message={toast} />
     </section>
   );
