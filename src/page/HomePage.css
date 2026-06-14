@@ -3,12 +3,23 @@
   padding: 1.5rem 2rem;
 }
 
-.home-page__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  position: relative;
+.home-page__corner {
+  position: fixed;
   z-index: 10000;
+  display: flex;
+  flex-direction: column;
+}
+
+.home-page__corner--left {
+  top: 1.5rem;
+  left: 2rem;
+  gap: 1.5rem;
+}
+
+.home-page__corner--right {
+  top: 1.5rem;
+  right: 2rem;
+  align-items: flex-end;
 }
 
 .home-page__name {
@@ -17,10 +28,8 @@
   font-weight: 400;
 }
 
-.home-page__left {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+.home-page__stage--grid {
+  padding-top: 22rem;
 }
 
 .home-page__grid-toggle {
@@ -31,7 +40,12 @@
   color: inherit;
   font: inherit;
   cursor: pointer;
-  text-decoration: underline;
+  opacity: 0.5;
+  transition: opacity 0.35s ease;
+}
+
+.home-page__grid-toggle:hover {
+  opacity: 1;
 }
 
 .home-page__tagline {
@@ -46,12 +60,6 @@
 
 .home-page__tagline-char {
   display: inline-block;
-}
-
-.home-page__nav {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
 }
 
 .home-page__group {

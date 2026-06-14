@@ -50,7 +50,7 @@ const compactPhases = (matches) => {
   return { phases, period: Math.max(order * STAGGER, LIFECYCLE) };
 };
 
-function ScrollStage({ projects = [], activeCategory = 'ALL' }) {
+function ScrollStage({ projects = [], activeCategory = 'ALL', entranceDelay = ENTRANCE_DELAY }) {
   const [activeProject, setActiveProject] = useState(null);
   const [originRect, setOriginRect] = useState(null);
 
@@ -192,15 +192,25 @@ function ScrollStage({ projects = [], activeCategory = 'ALL' }) {
     window.addEventListener('wheel', handleWheel, { passive: false });
 
     const handleMouseMove = (e) => {
+      // Among the (overlapping) cards under the cursor, hover only the front-most
+      // one that's actually visible. Faded/leaving cards are skipped so the card
+      // showing through behind them can take the hover.
+      let best = -1;
+      let bestZ = -Infinity;
       elements.forEach((el, i) => {
-        if (!el) return;
-        if (!visibleRef.current[i]) { el.classList.remove('is-hovered'); return; }
+        if (!el || !visibleRef.current[i]) return;
+        if (parseFloat(el.style.opacity || '1') < CLICK_THRESHOLD) return;
         const r = el.getBoundingClientRect();
-        el.classList.toggle(
-          'is-hovered',
+        if (
           e.clientX >= r.left && e.clientX <= r.right &&
-          e.clientY >= r.top  && e.clientY <= r.bottom,
-        );
+          e.clientY >= r.top && e.clientY <= r.bottom
+        ) {
+          const z = parseInt(el.style.zIndex || '0', 10);
+          if (z > bestZ) { bestZ = z; best = i; }
+        }
+      });
+      elements.forEach((el, i) => {
+        if (el) el.classList.toggle('is-hovered', i === best);
       });
     };
     const handleMouseLeave = () => elements.forEach((el) => el?.classList.remove('is-hovered'));
@@ -232,7 +242,7 @@ function ScrollStage({ projects = [], activeCategory = 'ALL' }) {
             seek(valueRef.current);
           },
         });
-      }, ENTRANCE_DELAY);
+      }, entranceDelay);
     }
 
     return () => {

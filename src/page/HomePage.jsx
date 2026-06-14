@@ -29,6 +29,7 @@ function HomePage() {
   const [view, setView] = useState('scroll');
   const stageRef = useRef(null);
   const switchingRef = useRef(false);
+  const firstScrollRef = useRef(true);
 
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}assets/works/project.json`)
@@ -213,7 +214,10 @@ function HomePage() {
   const toggleView = () => {
     if (switchingRef.current) return;
     const wrapper = stageRef.current;
-    const swap = () => setView((v) => (v === 'scroll' ? 'grid' : 'scroll'));
+    const swap = () => {
+      firstScrollRef.current = false;
+      setView((v) => (v === 'scroll' ? 'grid' : 'scroll'));
+    };
     if (!wrapper) {
       swap();
       return;
@@ -233,114 +237,120 @@ function HomePage() {
 
   return (
     <section className="home-page">
-      <header className="home-page__header">
-        <div className="home-page__left">
-          <h1 className="home-page__name">Yuehan Ma</h1>
-          <p className="home-page__tagline">
-            {'She is open for commission and freelance :)'.split('').map((char, i) => (
-              <span
-                key={i}
-                ref={(el) => { taglineWordsRef.current[i] = el; }}
-                className="home-page__tagline-char"
-              >
-                {char === ' ' ? '\u00a0' : char}
-              </span>
-            ))}
-          </p>
-          <button
-            type="button"
-            className="home-page__grid-toggle"
-            onClick={toggleView}
-          >
-            {view === 'grid' ? 'Show as scroll' : 'Show as grid'}
+      <div className="home-page__corner home-page__corner--left">
+        <h1 className="home-page__name">Yuehan Ma</h1>
+        <p className="home-page__tagline">
+          {'She is open for commission and freelance :)'.split('').map((char, i) => (
+            <span
+              key={i}
+              ref={(el) => { taglineWordsRef.current[i] = el; }}
+              className="home-page__tagline-char"
+            >
+              {char === ' ' ? '\u00a0' : char}
+            </span>
+          ))}
+        </p>
+        <button
+          type="button"
+          className="home-page__grid-toggle"
+          onClick={toggleView}
+        >
+          {view === 'grid' ? 'Show as scroll' : 'Show as grid'}
+        </button>
+        <Sort
+          categories={categories}
+          active={activeCategory}
+          onSelect={setActiveCategory}
+          onCharsReady={(chars) => { sortCharsRef.current = chars; }}
+        />
+      </div>
+
+      <nav className="home-page__corner home-page__corner--right">
+        <div
+          className="home-page__group"
+          onMouseEnter={() => setOpen('about', true)}
+          onMouseLeave={() => setOpen('about', false)}
+        >
+          <button type="button" className="home-page__link">
+            About
           </button>
-          <Sort
-            categories={categories}
-            active={activeCategory}
-            onSelect={setActiveCategory}
-            onCharsReady={(chars) => { sortCharsRef.current = chars; }}
-          />
+          {revealed && (
+          <ExpandablePanel
+            isOpen={openPanels.about}
+            className="home-page__panel"
+          >
+            <p>
+              Yuehan is a Chinese designer and creative content creator based
+              in New York. Her work blends code, culture, and communication to
+              craft interactive and visual experiences that foster human
+              connection.
+            </p>
+            <a
+              className="home-page__cv"
+              href={`${import.meta.env.BASE_URL}assets/cv.pdf`}
+              download
+            >
+              Download CV
+            </a>
+          </ExpandablePanel>
+          )}
         </div>
-        <nav className="home-page__nav">
-          <div
-            className="home-page__group"
-            onMouseEnter={() => setOpen('about', true)}
-            onMouseLeave={() => setOpen('about', false)}
+
+        <div
+          className="home-page__group"
+          onMouseEnter={() => setOpen('contact', true)}
+          onMouseLeave={() => setOpen('contact', false)}
+        >
+          <button type="button" className="home-page__link">
+            Contact
+          </button>
+          {revealed && (
+          <ExpandablePanel
+            isOpen={openPanels.contact}
+            className="home-page__panel"
           >
-            <button type="button" className="home-page__link">
-              About
-            </button>
-            {revealed && (
-            <ExpandablePanel
-              isOpen={openPanels.about}
-              className="home-page__panel"
-            >
-              <p>
-                Yuehan is a Chinese designer and creative content creator based
-                in New York. Her work blends code, culture, and communication to
-                craft interactive and visual experiences that foster human
-                connection.
-              </p>
-              <a
-                className="home-page__cv"
-                href={`${import.meta.env.BASE_URL}assets/cv.pdf`}
-                download
+            <div className="home-page__links">
+              <button
+                type="button"
+                className="home-page__contact-link"
+                onClick={copyEmail}
               >
-                Download CV
+                Email
+              </button>
+              <a
+                className="home-page__contact-link"
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Instagram
               </a>
-            </ExpandablePanel>
-            )}
-          </div>
+              <a
+                className="home-page__contact-link"
+                href={LINKEDIN_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Linkedin
+              </a>
+            </div>
+          </ExpandablePanel>
+          )}
+        </div>
+      </nav>
 
-          <div
-            className="home-page__group"
-            onMouseEnter={() => setOpen('contact', true)}
-            onMouseLeave={() => setOpen('contact', false)}
-          >
-            <button type="button" className="home-page__link">
-              Contact
-            </button>
-            {revealed && (
-            <ExpandablePanel
-              isOpen={openPanels.contact}
-              className="home-page__panel"
-            >
-              <div className="home-page__links">
-                <button
-                  type="button"
-                  className="home-page__contact-link"
-                  onClick={copyEmail}
-                >
-                  Email
-                </button>
-                <a
-                  className="home-page__contact-link"
-                  href={INSTAGRAM_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Instagram
-                </a>
-                <a
-                  className="home-page__contact-link"
-                  href={LINKEDIN_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Linkedin
-                </a>
-              </div>
-            </ExpandablePanel>
-            )}
-          </div>
-        </nav>
-      </header>
-
-      <div className="home-page__stage" ref={stageRef}>
+      <div
+        className={`home-page__stage${view === 'grid' ? ' home-page__stage--grid' : ''}`}
+        ref={stageRef}
+      >
         {view === 'grid' ? (
           <ProjectGrid projects={projects} activeCategory={activeCategory} />
         ) : (
-          <ScrollStage projects={projects} activeCategory={activeCategory} />
+          <ScrollStage
+            projects={projects}
+            activeCategory={activeCategory}
+            entranceDelay={firstScrollRef.current ? undefined : 0}
+          />
         )}
       </div>
       <Toast message={toast} />
