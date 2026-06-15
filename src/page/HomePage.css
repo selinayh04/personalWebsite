@@ -56,10 +56,7 @@
   transform: rotate(1.5deg);
   transform-origin: left center;
   white-space: nowrap;
-}
-
-.home-page__tagline-char {
-  display: inline-block;
+  overflow: hidden;
 }
 
 .home-page__group {

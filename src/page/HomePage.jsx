@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { animate, splitText, stagger } from 'animejs';
 import ExpandablePanel from '../component/ExpandablePanel/ExpandablePanel.jsx';
 import ScrollStage from '../component/ScrollStage/ScrollStage.jsx';
@@ -10,6 +10,8 @@ import './HomePage.css';
 const EMAIL = 'mayuehan0420@gmail.com';
 const INSTAGRAM_URL = 'https://www.instagram.com/selinayh__/';
 const LINKEDIN_URL = 'https://www.linkedin.com/in/yuehan-ma-611ba9324/';
+const TAGLINE_DELAY = 800;
+const GRID_TOGGLE_DELAY = 1600;
 
 function HomePage() {
   const [openPanels, setOpenPanels] = useState({
@@ -22,6 +24,11 @@ function HomePage() {
   const nameCharsRef = useRef([]);
   const sortCharsRef = useRef([]);
   const taglineWordsRef = useRef([]);
+  const taglineRef = useRef(null);
+  const gridToggleRef = useRef(null);
+  const gridToggleLabelRef = useRef(null);
+  const gridSplitRef = useRef(null);
+  const gridViewInitRef = useRef(true);
 
   const [projects, setProjects] = useState([]);
   const [categoryOrder, setCategoryOrder] = useState([]);
@@ -68,6 +75,66 @@ function HomePage() {
 
     return () => splits.forEach((s) => s.revert());
   }, []);
+
+  useLayoutEffect(() => {
+    if (taglineRef.current) taglineRef.current.style.opacity = '0';
+    if (gridToggleRef.current) gridToggleRef.current.style.opacity = '0';
+  }, []);
+
+  useEffect(() => {
+    const taglineEl = taglineRef.current;
+    const gridLabelEl = gridToggleLabelRef.current;
+    const gridBtnEl = gridToggleRef.current;
+    if (!taglineEl || !gridLabelEl || !gridBtnEl) return undefined;
+
+    const taglineSplit = splitText(taglineEl, { chars: { wrap: 'clip' } });
+    const gridSplit = splitText(gridLabelEl, { chars: { wrap: 'clip' } });
+    gridSplitRef.current = gridSplit;
+    taglineWordsRef.current = taglineSplit.chars;
+
+    let taglineAnim = null;
+    let gridAnim = null;
+    const taglineTimer = setTimeout(() => {
+      taglineEl.style.opacity = '1';
+      taglineAnim = animate(taglineSplit.chars, {
+        y: [{ to: ['100%', '0%'] }],
+        duration: 550,
+        ease: 'outCubic',
+        delay: stagger(25),
+      });
+    }, TAGLINE_DELAY);
+
+    const gridTimer = setTimeout(() => {
+      gridBtnEl.style.opacity = '';
+      gridAnim = animate(gridSplit.chars, {
+        y: [{ to: ['100%', '0%'] }],
+        duration: 550,
+        ease: 'outCubic',
+        delay: stagger(60),
+      });
+    }, GRID_TOGGLE_DELAY);
+
+    return () => {
+      clearTimeout(taglineTimer);
+      clearTimeout(gridTimer);
+      taglineAnim?.pause();
+      gridAnim?.pause();
+      taglineSplit.revert();
+      gridSplit.revert();
+      gridSplitRef.current = null;
+      taglineWordsRef.current = [];
+    };
+  }, []);
+
+  useEffect(() => {
+    if (gridViewInitRef.current) {
+      gridViewInitRef.current = false;
+      return;
+    }
+    if (!gridSplitRef.current) return;
+    gridSplitRef.current.revert();
+    gridSplitRef.current = null;
+  }, [view]);
 
   // Idle "screensaver": after 20s of no activity, all header words detach and
   // bounce around the screen like a DVD logo until the user interacts again.
@@ -239,23 +306,18 @@ function HomePage() {
     <section className="home-page">
       <div className="home-page__corner home-page__corner--left">
         <h1 className="home-page__name">Yuehan Ma</h1>
-        <p className="home-page__tagline">
-          {'She is open for commission and freelance :)'.split('').map((char, i) => (
-            <span
-              key={i}
-              ref={(el) => { taglineWordsRef.current[i] = el; }}
-              className="home-page__tagline-char"
-            >
-              {char === ' ' ? '\u00a0' : char}
-            </span>
-          ))}
+        <p className="home-page__tagline" ref={taglineRef}>
+          She is open for commission and freelance :)
         </p>
         <button
           type="button"
           className="home-page__grid-toggle"
+          ref={gridToggleRef}
           onClick={toggleView}
         >
-          {view === 'grid' ? 'Show as scroll' : 'Show as grid'}
+          <span ref={gridToggleLabelRef}>
+            {view === 'grid' ? 'Show as scroll' : 'Show as grid'}
+          </span>
         </button>
         <Sort
           categories={categories}

@@ -34,6 +34,10 @@ const ENTRANCE_DISTANCE = SLIDE_DURATION;
 const ENTRANCE_EASE = 'outExpo';
 
 const LIFECYCLE = SLIDE_DURATION + FADE_DURATION;
+// Keep inCubic scale continuous through fade; still hits SCALE_END at slide end.
+const SLIDE_PROGRESS = SLIDE_DURATION / LIFECYCLE;
+const SCALE_LIFECYCLE_END =
+  SCALE_START + (SCALE_END - SCALE_START) / (SLIDE_PROGRESS ** 3);
 
 const matchesCategory = (project, category) =>
   category === 'ALL' || (project.category ?? []).includes(category);
@@ -106,19 +110,24 @@ function ScrollStage({ projects = [], activeCategory = 'ALL', entranceDelay = EN
       tl.add(
         el,
         {
-          translateY: ['-150%', '-30%'],
-          scale: { from: SCALE_START, to: SCALE_END, ease: 'inCubic' },
-          opacity: [1, 1],
-          duration: SLIDE_DURATION,
+          translateY: ['-150%', '-14%'],
+          duration: LIFECYCLE,
           ease: 'linear',
         },
         0,
       );
-      // Keep sliding (same velocity) while fading, instead of freezing in place.
       tl.add(
         el,
-        { translateY: ['-30%', '-14%'], duration: FADE_DURATION, ease: 'linear' },
-        SLIDE_DURATION,
+        {
+          scale: { from: SCALE_START, to: SCALE_LIFECYCLE_END, ease: 'inCubic' },
+          duration: LIFECYCLE,
+        },
+        0,
+      );
+      tl.add(
+        el,
+        { opacity: [1, 1], duration: SLIDE_DURATION },
+        0,
       );
       tl.add(
         el,
