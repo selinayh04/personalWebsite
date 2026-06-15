@@ -13,7 +13,7 @@
 .home-page__corner--left {
   top: 1.5rem;
   left: 2rem;
-  gap: 1.5rem;
+  gap: 0;
 }
 
 .home-page__corner--right {
@@ -23,7 +23,7 @@
 }
 
 .home-page__name {
-  margin: 0;
+  margin: 0 0 3rem;
   font-size: 3.5rem;
   font-weight: 400;
 }
@@ -37,6 +37,7 @@
   background: none;
   border: none;
   padding: 0;
+  margin-bottom: 0.4rem;
   color: inherit;
   font: inherit;
   cursor: pointer;
@@ -49,14 +50,9 @@
 }
 
 .home-page__tagline {
-  margin: -2.5rem 0 0;
+  margin: 0 0 0.25rem;
   font-size: 0.85rem;
   opacity: 0.6;
-  display: inline-block;
-  transform: rotate(1.5deg);
-  transform-origin: left center;
-  white-space: nowrap;
-  overflow: hidden;
 }
 
 .home-page__group {

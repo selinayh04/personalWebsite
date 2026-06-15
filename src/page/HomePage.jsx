@@ -10,7 +10,6 @@ import './HomePage.css';
 const EMAIL = 'mayuehan0420@gmail.com';
 const INSTAGRAM_URL = 'https://www.instagram.com/selinayh__/';
 const LINKEDIN_URL = 'https://www.linkedin.com/in/yuehan-ma-611ba9324/';
-const TAGLINE_DELAY = 800;
 const GRID_TOGGLE_DELAY = 1600;
 
 function HomePage() {
@@ -23,8 +22,6 @@ function HomePage() {
   const toastTimer = useRef(null);
   const nameCharsRef = useRef([]);
   const sortCharsRef = useRef([]);
-  const taglineWordsRef = useRef([]);
-  const taglineRef = useRef(null);
   const gridToggleRef = useRef(null);
   const gridToggleLabelRef = useRef(null);
   const gridSplitRef = useRef(null);
@@ -77,32 +74,18 @@ function HomePage() {
   }, []);
 
   useLayoutEffect(() => {
-    if (taglineRef.current) taglineRef.current.style.opacity = '0';
     if (gridToggleRef.current) gridToggleRef.current.style.opacity = '0';
   }, []);
 
   useEffect(() => {
-    const taglineEl = taglineRef.current;
     const gridLabelEl = gridToggleLabelRef.current;
     const gridBtnEl = gridToggleRef.current;
-    if (!taglineEl || !gridLabelEl || !gridBtnEl) return undefined;
+    if (!gridLabelEl || !gridBtnEl) return undefined;
 
-    const taglineSplit = splitText(taglineEl, { chars: { wrap: 'clip' } });
     const gridSplit = splitText(gridLabelEl, { chars: { wrap: 'clip' } });
     gridSplitRef.current = gridSplit;
-    taglineWordsRef.current = taglineSplit.chars;
 
-    let taglineAnim = null;
     let gridAnim = null;
-    const taglineTimer = setTimeout(() => {
-      taglineEl.style.opacity = '1';
-      taglineAnim = animate(taglineSplit.chars, {
-        y: [{ to: ['100%', '0%'] }],
-        duration: 550,
-        ease: 'outCubic',
-        delay: stagger(25),
-      });
-    }, TAGLINE_DELAY);
 
     const gridTimer = setTimeout(() => {
       gridBtnEl.style.opacity = '';
@@ -115,14 +98,10 @@ function HomePage() {
     }, GRID_TOGGLE_DELAY);
 
     return () => {
-      clearTimeout(taglineTimer);
       clearTimeout(gridTimer);
-      taglineAnim?.pause();
       gridAnim?.pause();
-      taglineSplit.revert();
       gridSplit.revert();
       gridSplitRef.current = null;
-      taglineWordsRef.current = [];
     };
   }, []);
 
@@ -177,7 +156,6 @@ function HomePage() {
       const allEls = [
         ...nameCharsRef.current,
         ...sortCharsRef.current,
-        ...taglineWordsRef.current.filter(Boolean),
       ];
       if (idle.active || allEls.length === 0) return;
       idle.active = true;
@@ -306,9 +284,6 @@ function HomePage() {
     <section className="home-page">
       <div className="home-page__corner home-page__corner--left">
         <h1 className="home-page__name">Yuehan Ma</h1>
-        <p className="home-page__tagline" ref={taglineRef}>
-          She is open for commission and freelance :)
-        </p>
         <button
           type="button"
           className="home-page__grid-toggle"
@@ -346,6 +321,9 @@ function HomePage() {
               in New York. Her work blends code, culture, and communication to
               craft interactive and visual experiences that foster human
               connection.
+            </p>
+            <p className="home-page__tagline">
+              She is open for commission and freelance :)
             </p>
             <a
               className="home-page__cv"
