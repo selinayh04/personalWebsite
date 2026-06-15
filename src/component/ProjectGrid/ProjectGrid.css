@@ -1,15 +1,46 @@
 .project-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1.5rem;
-  padding: 0 0 4rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  padding: 0 0 6rem;
   opacity: 0;
+  align-items: start;
 }
 
-.project-grid .project-card {
+.project-grid__item {
+  cursor: pointer;
+  min-width: 0;
+}
+
+.project-grid__item .project-card {
   position: static;
   width: 100%;
   margin: 0;
   transform: none;
   will-change: auto;
+  cursor: pointer;
+}
+
+.project-grid__item:hover .project-card__inner {
+  transform: scale(1.03);
+}
+
+.project-grid__label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-top: 0.55rem;
+}
+
+.project-grid__label-name {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.project-grid__label-meta {
+  font-size: 0.75rem;
+  opacity: 0.45;
+  white-space: nowrap;
+  flex-shrink: 0;
 }

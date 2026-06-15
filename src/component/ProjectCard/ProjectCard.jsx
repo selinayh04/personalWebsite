@@ -1,11 +1,12 @@
 import './ProjectCard.css';
 
-function ProjectCard({ number, image, ref, shiftRef, onClick, className = '' }) {
+function ProjectCard({ number, image, ref, shiftRef, onClick, className = '', style }) {
   return (
     <div
       ref={ref}
       className={`project-card${className ? ` ${className}` : ''}`}
       onClick={onClick}
+      style={style}
     >
       <div ref={shiftRef} className="project-card__shift">
         <div className="project-card__inner">
