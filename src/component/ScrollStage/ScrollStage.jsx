@@ -3,8 +3,12 @@ import { animate, createTimeline } from 'animejs';
 import ProjectCard from '../ProjectCard/ProjectCard.jsx';
 import ProjectLightroom from '../ProjectLightroom/ProjectLightroom.jsx';
 
-const resolveSrc = (path) =>
-  path ? `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}` : '';
+const resolveSrc = (path) => {
+  if (!path) return '';
+  const clean = path.replace(/^\//, '');
+  const encoded = clean.split('/').map(encodeURIComponent).join('/');
+  return `${import.meta.env.BASE_URL}${encoded}`;
+};
 
 const SHIFT_DISTANCE = 120;
 const TRANSITION_DURATION = 350;

@@ -11,12 +11,20 @@ const SCROLL_DURATION = 600;
 const SCROLL_EASE = 'outExpo';
 
 // Fraction of the viewport the main image is allowed to fill. Lower = smaller image.
-const VIEW_FRACTION = 0.75;
+const VIEW_FRACTION = 0.60;
 const INFO_GAP = 16;
 const MIN_TOP = 24;
 
-const resolveSrc = (path) =>
-  path ? `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}` : '';
+// Image-only extensions the carousel can display.
+const IMAGE_EXTS = /\.(jpe?g|png|gif|webp|avif|svg)$/i;
+
+const resolveSrc = (path) => {
+  if (!path) return '';
+  // Encode each path segment so spaces and special chars become valid URLs.
+  const clean = path.replace(/^\//, '');
+  const encoded = clean.split('/').map(encodeURIComponent).join('/');
+  return `${import.meta.env.BASE_URL}${encoded}`;
+};
 
 const centeredBox = (ratio) => {
   const maxW = window.innerWidth * VIEW_FRACTION;
@@ -79,8 +87,6 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
   const buildLoop = () => {
     if (cancelledRef.current) return;
     if (!morphDoneRef.current || !ratiosRef.current || !targetBoxRef.current) return;
-    // Only one image: keep the single hero, no carousel / infinite scroll.
-    if (ratiosRef.current.length <= 1) return;
 
     const target = targetBoxRef.current;
     const H = target.height;
@@ -193,7 +199,8 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
 
     if (!img || !src || !origin) return;
 
-    const additional = dataRef.current.project.filePath?.additional ?? [];
+    const additional = (dataRef.current.project.filePath?.additional ?? [])
+      .filter((p) => IMAGE_EXTS.test(p));
     const srcs = [src, ...additional.map(resolveSrc)];
 
     setBox(img, origin);
