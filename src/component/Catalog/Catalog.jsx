@@ -2,6 +2,10 @@ import './Catalog.css';
 
 const VIDEO_EXTS = /\.(mp4|mov|webm)$/i;
 
+const hideBroken = (e) => {
+  e.currentTarget.style.display = 'none';
+};
+
 const resolveSrc = (path) => {
   if (!path) return '';
   const clean = path.replace(/^\//, '');
@@ -12,7 +16,11 @@ const resolveSrc = (path) => {
 const projectMedia = (project) => {
   const main = project.filePath?.main;
   const extra = (project.filePath?.additional ?? []).filter(Boolean);
-  return [main, ...extra].filter(Boolean).map(resolveSrc);
+  const all = [main, ...extra].filter(Boolean).map(resolveSrc);
+  // Huge animated GIFs (e.g. Fire Hydrant main.gif at 3672×4896) often
+  // fail to decode as thumbnails and show a broken-image tile.
+  const withoutGif = all.filter((src) => !/\.gif$/i.test(src));
+  return withoutGif.length ? withoutGif : all;
 };
 
 function Catalog({ projects = [], onOpen }) {
@@ -51,6 +59,7 @@ function Catalog({ projects = [], onOpen }) {
                           className="catalog__media"
                           src={src}
                           alt={project.name}
+                          onError={hideBroken}
                         />
                       ))}
                     </div>
@@ -60,6 +69,7 @@ function Catalog({ projects = [], onOpen }) {
                         className="catalog__media catalog__media--tall"
                         src={src}
                         alt={project.name}
+                        onError={hideBroken}
                       />
                     ))}
                   </>
@@ -81,6 +91,7 @@ function Catalog({ projects = [], onOpen }) {
                         className="catalog__media"
                         src={src}
                         alt={project.name}
+                        onError={hideBroken}
                       />
                     ),
                   )
