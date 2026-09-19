@@ -12,11 +12,14 @@ const SCROLL_EASE = 'outExpo';
 
 // Fraction of the viewport the main image is allowed to fill. Lower = smaller image.
 const VIEW_FRACTION = 0.60;
-const INFO_GAP = 16;
+const INFO_GAP = 22;
+const RULE_GAP = 10;
 const MIN_TOP = 24;
 
-// Image-only extensions the carousel can display.
-const IMAGE_EXTS = /\.(jpe?g|png|gif|webp|avif|svg)$/i;
+const VIDEO_EXTS = /\.(mp4|mov|webm)$/i;
+const MEDIA_EXTS = /\.(jpe?g|png|gif|webp|avif|svg|mp4|mov|webm)$/i;
+
+const isVideoSrc = (src) => VIDEO_EXTS.test(src);
 
 const resolveSrc = (path) => {
   if (!path) return '';
@@ -26,9 +29,11 @@ const resolveSrc = (path) => {
   return `${import.meta.env.BASE_URL}${encoded}`;
 };
 
+const viewFraction = () => (window.innerWidth < 720 ? 0.86 : VIEW_FRACTION);
+
 const centeredBox = (ratio) => {
-  const maxW = window.innerWidth * VIEW_FRACTION;
-  const maxH = window.innerHeight * VIEW_FRACTION;
+  const maxW = window.innerWidth * viewFraction();
+  const maxH = window.innerHeight * (window.innerWidth < 720 ? 0.48 : VIEW_FRACTION);
   let width = maxW;
   let height = width / ratio;
   if (height > maxH) {
@@ -52,6 +57,14 @@ const setBox = (el, box) => {
 
 const loadRatio = (src) =>
   new Promise((resolve) => {
+    if (isVideoSrc(src)) {
+      const v = document.createElement('video');
+      v.preload = 'metadata';
+      v.onloadedmetadata = () => resolve(v.videoWidth / v.videoHeight || 16 / 9);
+      v.onerror = () => resolve(16 / 9);
+      v.src = src;
+      return;
+    }
     const im = new Image();
     im.onload = () => resolve(im.naturalWidth / im.naturalHeight || 16 / 9);
     im.onerror = () => resolve(16 / 9);
@@ -67,6 +80,7 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
   const backdropRef = useRef(null);
   const stripRef = useRef(null);
   const infoRef = useRef(null);
+  const ruleRef = useRef(null);
 
   const targetBoxRef = useRef(null);
   const morphDoneRef = useRef(false);
@@ -90,9 +104,16 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
 
     const target = targetBoxRef.current;
     const H = target.height;
+    // One photo only: keep the hero image, do not build a repeating gallery.
+    if (ratiosRef.current.length <= 1) {
+      readyRef.current = false;
+      return;
+    }
+
     const images = ratiosRef.current.map((r) => ({
       src: r.src,
       width: H * r.ratio,
+      kind: isVideoSrc(r.src) ? 'video' : 'image',
     }));
     const setWidth = images.reduce((sum, im) => sum + im.width, 0);
     const period = setWidth + images.length * GAP;
@@ -114,9 +135,10 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
     if (!ratios || ratios.length === 0) return;
 
     const base = centeredBox(ratios[0].ratio);
+    const mobile = window.innerWidth < 720;
     if (info) {
-      info.style.left = `${base.left}px`;
-      info.style.width = `${base.width}px`;
+      info.style.left = mobile ? '1rem' : `${base.left}px`;
+      info.style.width = mobile ? `${window.innerWidth - 32}px` : `${base.width}px`;
       info.style.maxHeight = '';
       info.style.overflowY = '';
     }
@@ -125,6 +147,9 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
     const top = Math.max(MIN_TOP, (window.innerHeight - totalH) / 2);
     const target = { left: base.left, top, width: base.width, height: base.height };
     targetBoxRef.current = target;
+    if (ruleRef.current) {
+      ruleRef.current.style.top = `${top + base.height + RULE_GAP}px`;
+    }
     if (info) {
       const infoTop = top + base.height + INFO_GAP;
       const availH = window.innerHeight - infoTop - MIN_TOP;
@@ -188,6 +213,7 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
     valueXRef.current = 0;
     targetXRef.current = 0;
     if (info) info.style.opacity = '0';
+    if (ruleRef.current) ruleRef.current.style.opacity = '0';
 
     if (backdrop) {
       animate(backdrop, {
@@ -200,7 +226,7 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
     if (!img || !src || !origin) return;
 
     const additional = (dataRef.current.project.filePath?.additional ?? [])
-      .filter((p) => IMAGE_EXTS.test(p));
+      .filter((p) => MEDIA_EXTS.test(p));
     const srcs = [src, ...additional.map(resolveSrc)];
 
     setBox(img, origin);
@@ -214,8 +240,9 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
       // (image + gap + info) group vertically.
       let infoH = 0;
       if (info) {
-        info.style.left = `${base.left}px`;
-        info.style.width = `${base.width}px`;
+        const mobile = window.innerWidth < 720;
+        info.style.left = mobile ? '1rem' : `${base.left}px`;
+        info.style.width = mobile ? `${window.innerWidth - 32}px` : `${base.width}px`;
         infoH = info.offsetHeight;
       }
       const totalH = base.height + INFO_GAP + infoH;
@@ -224,6 +251,9 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
       targetBoxRef.current = target;
 
       if (info) info.style.top = `${top + base.height + INFO_GAP}px`;
+      if (ruleRef.current) {
+        ruleRef.current.style.top = `${top + base.height + RULE_GAP}px`;
+      }
       animate(img, {
         left: [`${origin.left}px`, `${target.left}px`],
         top: [`${origin.top}px`, `${target.top}px`],
@@ -234,6 +264,9 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
         onComplete: () => {
           if (info) {
             animate(info, { opacity: [0, 1], duration: 300, ease: 'outCubic' });
+          }
+          if (ruleRef.current) {
+            animate(ruleRef.current, { opacity: [0, 1], duration: 300, ease: 'outCubic' });
           }
           morphDoneRef.current = true;
           buildLoop();
@@ -288,11 +321,46 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
 
     const handleResize = () => relayout();
 
+    let touchX = 0;
+    let touchVal = 0;
+    let swiped = false;
+
+    const handleTouchStart = (e) => {
+      if (!readyRef.current) return;
+      if (infoRef.current && infoRef.current.contains(e.target)) return;
+      touchX = e.touches[0].clientX;
+      touchVal = valueXRef.current;
+      swiped = false;
+    };
+
+    const handleTouchMove = (e) => {
+      if (!readyRef.current) return;
+      if (infoRef.current && infoRef.current.contains(e.target)) return;
+      const dx = touchX - e.touches[0].clientX;
+      if (Math.abs(dx) > 8) swiped = true;
+      e.preventDefault();
+      valueXRef.current = touchVal + dx;
+      targetXRef.current = valueXRef.current;
+      apply();
+    };
+
+    const handleTouchEnd = () => {
+      if (swiped) {
+        window.addEventListener('click', (ev) => ev.stopPropagation(), { capture: true, once: true });
+      }
+    };
+
     window.addEventListener('wheel', handleWheel, { passive: false });
     window.addEventListener('resize', handleResize);
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchend', handleTouchEnd);
     return () => {
       window.removeEventListener('wheel', handleWheel);
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
       scrollAnim?.pause();
     };
   }, [render]);
@@ -309,6 +377,9 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
 
     if (strip) animate(strip, { opacity: 0, duration: MORPH_DURATION, ease: 'outCubic' });
     if (info) animate(info, { opacity: 0, duration: MORPH_DURATION, ease: 'outCubic' });
+    if (ruleRef.current) {
+      animate(ruleRef.current, { opacity: 0, duration: MORPH_DURATION, ease: 'outCubic' });
+    }
     if (backdrop) {
       animate(backdrop, {
         opacity: [1, 0],
@@ -379,18 +450,33 @@ function ProjectLightroom({ project, image, originRect, isOpen, onClose }) {
           style={{ top: `${loop.top}px`, height: `${loop.H}px` }}
         >
           {Array.from({ length: loop.copies }).flatMap((_, c) =>
-            loop.images.map((im, k) => (
-              <img
-                key={`${c}-${k}`}
-                className="project-lightroom__photo"
-                src={im.src}
-                alt={p.name}
-                onClick={(e) => e.stopPropagation()}
-              />
-            )),
+            loop.images.map((im, k) =>
+              im.kind === 'video' ? (
+                <video
+                  key={`${c}-${k}`}
+                  className="project-lightroom__photo"
+                  src={im.src}
+                  muted
+                  autoPlay
+                  loop
+                  playsInline
+                  onClick={(e) => e.stopPropagation()}
+                />
+              ) : (
+                <img
+                  key={`${c}-${k}`}
+                  className="project-lightroom__photo"
+                  src={im.src}
+                  alt={p.name}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              ),
+            ),
           )}
         </div>
       )}
+
+      <div className="project-lightroom__rule" ref={ruleRef} aria-hidden="true" />
 
       <div
         className="project-lightroom__info"

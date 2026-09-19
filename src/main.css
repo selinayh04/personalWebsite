@@ -1,9 +1,98 @@
+/* ---- New Edge 666 family ---- */
+@font-face {
+  font-family: 'NewEdge666';
+  src: url('/assets/fonts/NewEdge666Test-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
 @font-face {
   font-family: 'NewEdge666';
   src: url('/assets/fonts/NewEdge666Test-Regular.otf') format('opentype');
-  font-weight: normal;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
+}
+
+@font-face {
+  font-family: 'NewEdge666';
+  src: url('/assets/fonts/NewEdge666Test-SemiBold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'NewEdge666';
+  src: url('/assets/fonts/NewEdge666Test-UltraBold.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Regular slanted, mapped to italic — the marquee display face */
+@font-face {
+  font-family: 'NewEdge666 Display';
+  src: url('/assets/fonts/NewEdge666Test-RegularSlanted.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'NewEdge666 Display';
+  src: url('/assets/fonts/NewEdge666Test-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Slanted ultrabold kept available as a heavier option */
+@font-face {
+  font-family: 'NewEdge666 Display';
+  src: url('/assets/fonts/NewEdge666Test-UltraBoldSlanted.otf') format('opentype');
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+  /* Editorial black & white palette */
+  --color-bg: #ffffff;
+  --color-fg: #323232;
+  --color-muted: #9a9a9a;
+  --color-hairline: #e2e2e2;
+
+  /* Marquee container boxes */
+  --box-bg: #f4f4f4;
+  --box-border: #a3a3a3;
+  --box-bg-hover: #ffffff;
+  --box-gap: 6px;
+  --box-radius: 0.16em;
+  /* soft dark-gray inset edge (not a solid line) */
+  --box-edge: rgba(48, 48, 48, 0.5);
+
+  /* Page gutters */
+  --gutter: 1.5rem;
+  --gutter-y: 0.7rem;
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  /* Fonts */
+  --font-ui: 'NewEdge666', Helvetica, Arial, sans-serif;
+  --font-display: 'NewEdge666 Display', 'NewEdge666', Helvetica, Arial, sans-serif;
+
+  /* Marquee headline: smaller, boxed. Desktop-first, degrades on small screens */
+  --display-size: clamp(1.9rem, 5vw, 5.25rem);
+  --display-leading: 1;
+
+  /* Small editorial UI text (everything except the marquee) */
+  --ui-size: clamp(0.76rem, 0.9vw, 0.88rem);
+  --nav-size: 0.7rem;
+  --label-size: 0.64rem;
 }
 
 *,
@@ -15,18 +104,28 @@
 html,
 body,
 #root {
-  height: 100%;
+  min-height: 100%;
   margin: 0;
   padding: 0;
 }
 
+html {
+  overflow-x: clip;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
-  font-family: 'NewEdge666', Helvetica, Arial, sans-serif;
-  background-color: #000;
-  color: #fff;
-  line-height: 1.4;
+  font-family: var(--font-ui);
+  font-weight: 400;
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  line-height: 1.35;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  -webkit-tap-highlight-color: transparent;
 }
 
 a {
@@ -36,5 +135,22 @@ a {
 
 button {
   font-family: inherit;
+  color: inherit;
   cursor: pointer;
+}
+
+::selection {
+  background: #323232;
+  color: #ffffff;
+}
+
+@media (max-width: 720px) {
+  :root {
+    --gutter: 1rem;
+    --gutter-y: 0.55rem;
+    --display-size: clamp(1.45rem, 8.2vw, 2.15rem);
+    --nav-size: 0.68rem;
+    --ui-size: 0.78rem;
+    --box-gap: 4px;
+  }
 }

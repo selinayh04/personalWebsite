@@ -39,7 +39,12 @@
         "assets/works/THE LOOP/image/2.jpg",
         "assets/works/THE LOOP/image/3.jpg",
         "assets/works/THE LOOP/image/4.jpg",
-        "assets/works/THE LOOP/image/5.jpg"
+        "assets/works/THE LOOP/image/5.jpg",
+        "assets/works/THE LOOP/image/6.jpg",
+        "assets/works/THE LOOP/image/7.jpg",
+        "assets/works/THE LOOP/image/7.mov",
+        "assets/works/THE LOOP/image/8.jpg",
+        "assets/works/THE LOOP/image/9.jpg"
       ] },
       "imageCaptions": [
         "Book Overview",
@@ -47,7 +52,12 @@
         "Lenticular Cards",
         "Foldable Poster",
         "Lottery Tickets",
-        "Packaging Design"
+        "Packaging Design",
+        "Documentation",
+        "Documentation",
+        "Video",
+        "Documentation",
+        "Documentation"
       ]
     },
     {
@@ -212,7 +222,7 @@
       "description": "Open Call Poster",
       "link": [""],
       "linkLabels": [""],
-      "filePath": { "main": "assets/works/Posters/image/smoke.png", "additional": [] },
+      "filePath": { "main": "assets/works/Posters/image/smoke.jpg", "additional": [] },
       "imageCaptions": ["Documentation"]
     },
     {
