@@ -68,35 +68,6 @@
   object-fit: cover;
 }
 
-/* Pool: two small side-by-side, two large stacked */
-.catalog__photos--pool {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  gap: 0.35rem;
-}
-
-.catalog__photos-pair {
-  display: flex;
-  gap: 0.35rem;
-}
-
-.catalog__photos--pool .catalog__photos-pair .catalog__media,
-.catalog__photos--pool .catalog__photos-pair .catalog__media:not(:only-child) {
-  width: calc(50% - 0.175rem);
-  max-height: 12rem;
-  height: auto;
-  object-fit: contain;
-}
-
-.catalog__photos--pool > .catalog__media--tall,
-.catalog__photos--pool > .catalog__media--tall:not(:only-child) {
-  width: 100%;
-  max-height: none;
-  height: auto;
-  object-fit: contain;
-}
-
 /* THE LOOP: packed columns, no forced equal row heights */
 .catalog__photos--masonry {
   display: block;

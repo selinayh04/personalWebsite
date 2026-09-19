@@ -13,12 +13,24 @@ const resolveSrc = (path) => {
   return `${import.meta.env.BASE_URL}${encoded}`;
 };
 
+const CATALOG_ONLY = {
+  '2': [
+    'assets/works/THE LOOP/image/3.jpg',
+    'assets/works/THE LOOP/image/4.jpg',
+    'assets/works/THE LOOP/image/7.mov',
+    'assets/works/THE LOOP/image/6.jpg',
+    'assets/works/THE LOOP/image/5.jpg',
+  ],
+};
+
 const projectMedia = (project) => {
+  if (CATALOG_ONLY[project.id]) {
+    return CATALOG_ONLY[project.id].map(resolveSrc);
+  }
   const main = project.filePath?.main;
   const extra = (project.filePath?.additional ?? []).filter(Boolean);
   const all = [main, ...extra].filter(Boolean).map(resolveSrc);
-  // Huge animated GIFs (e.g. Fire Hydrant main.gif at 3672×4896) often
-  // fail to decode as thumbnails and show a broken-image tile.
+  // Skip oversized GIFs in the grid (Fire Hydrant main.gif).
   const withoutGif = all.filter((src) => !/\.gif$/i.test(src));
   return withoutGif.length ? withoutGif : all;
 };
@@ -43,58 +55,31 @@ function Catalog({ projects = [], onOpen }) {
             <div className="catalog__body">
               <div
                 className={
-                  project.id === '1'
-                    ? 'catalog__photos catalog__photos--pool'
-                    : project.id === '2'
-                      ? 'catalog__photos catalog__photos--masonry'
-                      : 'catalog__photos'
+                  project.id === '2'
+                    ? 'catalog__photos catalog__photos--masonry'
+                    : 'catalog__photos'
                 }
               >
-                {project.id === '1' ? (
-                  <>
-                    <div className="catalog__photos-pair">
-                      {media.slice(0, 2).map((src, k) => (
-                        <img
-                          key={k}
-                          className="catalog__media"
-                          src={src}
-                          alt={project.name}
-                          onError={hideBroken}
-                        />
-                      ))}
-                    </div>
-                    {media.slice(2).map((src, k) => (
-                      <img
-                        key={`tall-${k}`}
-                        className="catalog__media catalog__media--tall"
-                        src={src}
-                        alt={project.name}
-                        onError={hideBroken}
-                      />
-                    ))}
-                  </>
-                ) : (
-                  media.map((src, k) =>
-                    VIDEO_EXTS.test(src) ? (
-                      <video
-                        key={k}
-                        className="catalog__media"
-                        src={src}
-                        muted
-                        autoPlay
-                        loop
-                        playsInline
-                      />
-                    ) : (
-                      <img
-                        key={k}
-                        className="catalog__media"
-                        src={src}
-                        alt={project.name}
-                        onError={hideBroken}
-                      />
-                    ),
-                  )
+                {media.map((src, k) =>
+                  VIDEO_EXTS.test(src) ? (
+                    <video
+                      key={k}
+                      className="catalog__media"
+                      src={src}
+                      muted
+                      autoPlay
+                      loop
+                      playsInline
+                    />
+                  ) : (
+                    <img
+                      key={k}
+                      className="catalog__media"
+                      src={src}
+                      alt={project.name}
+                      onError={hideBroken}
+                    />
+                  ),
                 )}
               </div>
               {project.description && (
