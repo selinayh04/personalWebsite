@@ -34,14 +34,16 @@ function Marquee({
       const phraseW = phrase.getBoundingClientRect().width;
       const containerW = container.getBoundingClientRect().width;
       if (phraseW <= 0) return;
-      const needed = Math.max(2, Math.ceil(containerW / phraseW) + 1);
-      setRepeats(needed);
-      // One group travels its own width per loop; keep a constant linear speed.
-      setDuration((phraseW * needed) / speed);
+      const needed = Math.max(2, Math.min(4, Math.ceil(containerW / phraseW) + 1));
+      const nextDuration = (phraseW * needed) / speed;
+      setRepeats((prev) => (prev === needed ? prev : needed));
+      setDuration((prev) => (Math.abs(prev - nextDuration) < 0.05 ? prev : nextDuration));
     };
     measure();
 
-    const ro = new ResizeObserver(measure);
+    const ro = new ResizeObserver(() => {
+      requestAnimationFrame(measure);
+    });
     if (containerRef.current) ro.observe(containerRef.current);
     return () => ro.disconnect();
   }, [text, speed]);
@@ -73,10 +75,12 @@ function Marquee({
         {text}
       </span>
 
-      <div className="marquee__track" style={{ '--marquee-duration': `${duration}s` }}>
-        <div className="marquee__group">{group}</div>
-        <div className="marquee__group" aria-hidden="true">
-          {group}
+      <div className="marquee__clip">
+        <div className="marquee__track" style={{ '--marquee-duration': `${duration}s` }}>
+          <div className="marquee__group">{group}</div>
+          <div className="marquee__group" aria-hidden="true">
+            {group}
+          </div>
         </div>
       </div>
     </div>

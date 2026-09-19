@@ -33,26 +33,57 @@ function Catalog({ projects = [], onOpen }) {
             </header>
 
             <div className="catalog__body">
-              <div className="catalog__photos">
-                {media.map((src, k) =>
-                  VIDEO_EXTS.test(src) ? (
-                    <video
-                      key={k}
-                      className="catalog__media"
-                      src={src}
-                      muted
-                      autoPlay
-                      loop
-                      playsInline
-                    />
-                  ) : (
-                    <img
-                      key={k}
-                      className="catalog__media"
-                      src={src}
-                      alt={project.name}
-                    />
-                  ),
+              <div
+                className={
+                  project.id === '1'
+                    ? 'catalog__photos catalog__photos--pool'
+                    : project.id === '2'
+                      ? 'catalog__photos catalog__photos--masonry'
+                      : 'catalog__photos'
+                }
+              >
+                {project.id === '1' ? (
+                  <>
+                    <div className="catalog__photos-pair">
+                      {media.slice(0, 2).map((src, k) => (
+                        <img
+                          key={k}
+                          className="catalog__media"
+                          src={src}
+                          alt={project.name}
+                        />
+                      ))}
+                    </div>
+                    {media.slice(2).map((src, k) => (
+                      <img
+                        key={`tall-${k}`}
+                        className="catalog__media catalog__media--tall"
+                        src={src}
+                        alt={project.name}
+                      />
+                    ))}
+                  </>
+                ) : (
+                  media.map((src, k) =>
+                    VIDEO_EXTS.test(src) ? (
+                      <video
+                        key={k}
+                        className="catalog__media"
+                        src={src}
+                        muted
+                        autoPlay
+                        loop
+                        playsInline
+                      />
+                    ) : (
+                      <img
+                        key={k}
+                        className="catalog__media"
+                        src={src}
+                        alt={project.name}
+                      />
+                    ),
+                  )
                 )}
               </div>
               {project.description && (
